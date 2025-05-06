@@ -41,6 +41,9 @@ The application is structured in the following way:
     - `preprocess_sentiment_analysis/preprocess.py` is used to preprocess a given dataset by cleaning the text (removing non-alphabetical characters, converting all words to lowercase, removing stopwords, and Porter stemming). It saves the results into a processed CSV file.
 - **Lib-version**
 - **Model training**
+    - `train.py` is used to train the restaurant sentiment analysis model.
+    - `data/a1_RestaurantReviews_HistoricDump.tsv` is the training data that has been used to train the model.
+    - `model/` contains the trained model files that is ready to use for the model-service.
 
 ## Repository Links
 For convenience, we list links to the available repositories used in this project:
@@ -57,7 +60,7 @@ For convenience, we list links to the available repositories used in this projec
 All core components of the assignment have been implemented. 
 
 - **Lib-ml** provides a preprocessing library for cleaning up the dataset text to be used in the sentiment analysis. 
-- **Model-training** [WRITE BRIEF SENTENCE HERE]. 
+- **Model-training** Trains the restaurant sentiment analysis model and publishes it to releases for access.
 - **Model-service** applies preprocessing and uses the model to return a prediction.
 - **Lib-version** [WRITE BRIEF SENTENCE HERE]. 
 - **App-service** Build the frontend and backend for the project, call model-service api, and use lib-version util. 
