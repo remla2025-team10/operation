@@ -1,0 +1,22 @@
+services:
+  model-service:
+    image: ${MODEL_SERVICE_IMAGE}
+    container_name: model-service
+    ports: []
+    environment:
+      - PORT=${MODEL_SERVICE_PORT}
+    volumes:
+      - ./models:/model-service/models
+    restart: always
+  
+  app:
+    image: ${APP_IMAGE}
+    container_name: app-service
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    environment:
+      - PORT=${APP_PORT}
+      - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
+    depends_on:
+      - model-service
+    restart: always
