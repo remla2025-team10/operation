@@ -54,12 +54,13 @@ For convenience, we list links to the available repositories used in this projec
 ### Assignment 1
 #### What was done
 All core components of the assignment have been implemented. 
-**Lib-ml** [WRITE BRIEF SENTENCE HERE]. 
-**Model-training** [WRITE BRIEF SENTENCE HERE]. 
-**Model-service** applies preprocessing and uses the model to return a prediction.
-**Lib-version** [WRITE BRIEF SENTENCE HERE]. 
-**App-service** [WRITE BRIEF SENTENCE HERE]. 
-**Operation** builds up the containers for the model-service and app-service and hides model-service from the host (only accessible by app-service).
+
+- **Lib-ml** [WRITE BRIEF SENTENCE HERE]. 
+- **Model-training** [WRITE BRIEF SENTENCE HERE]. 
+- **Model-service** applies preprocessing and uses the model to return a prediction.
+- **Lib-version** [WRITE BRIEF SENTENCE HERE]. 
+- **App-service** Build the frontend and backend for the project, call model-service api, and use lib-version util. 
+- **Operation** builds up the containers for the model-service and app-service and hides model-service from the host (only accessible by app-service).
 
 #### What is missing / needs improvement
 [WRITE HERE IF ANYTHING COMES TO MIND]
