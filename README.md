@@ -69,4 +69,4 @@ All core components of the assignment have been implemented.
 - **Operation** builds up the containers for the model-service and app-service and hides model-service from the host (only accessible by app-service).
 
 #### What is missing / needs improvement
-[WRITE HERE IF ANYTHING COMES TO MIND]
+- **Automated versioning** is implemented only in the lib-version repository on pushes with a release or version tag. It creates releases on main with the correct stable version tag, also pre-release commits and tags automatically on main. Though these pre-release tags are not sub-ordered for now.
