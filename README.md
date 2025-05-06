@@ -62,7 +62,7 @@ All core components of the assignment have been implemented.
 - **Lib-ml** provides a preprocessing library for cleaning up the dataset text to be used in the sentiment analysis. 
 - **Model-training** Trains the restaurant sentiment analysis model and publishes it to releases for access.
 - **Model-service** applies preprocessing and uses the model to return a prediction.
-- **Lib-version** [WRITE BRIEF SENTENCE HERE]. 
+- **Lib-version** provides a simple library that can produce its build version upon request.
 - **App-service** Build the frontend and backend for the project, call model-service api, and use lib-version util. 
 - **Operation** builds up the containers for the model-service and app-service and hides model-service from the host (only accessible by app-service).
 
