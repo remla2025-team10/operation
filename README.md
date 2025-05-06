@@ -38,6 +38,7 @@ The application is structured in the following way:
     - `model-service/download_models.py` is used to download the classifier (and vectorizer) model used for the prediction
     - `model-service/app.py` contains the Flask wrapper for the model, with an endpoint that can be accessed by the app-service to request a prediction for a given review
 - **Lib-ml Repository**
+    - `preprocess_sentiment_analysis/preprocess.py` is used to preprocess a given dataset by cleaning the text (removing non-alphabetical characters, converting all words to lowercase, removing stopwords, and Porter stemming). It saves the results into a processed CSV file.
 - **Lib-version**
 - **Model training**
 
@@ -55,7 +56,7 @@ For convenience, we list links to the available repositories used in this projec
 #### What was done
 All core components of the assignment have been implemented. 
 
-- **Lib-ml** [WRITE BRIEF SENTENCE HERE]. 
+- **Lib-ml** provides a preprocessing library for cleaning up the dataset text to be used in the sentiment analysis. 
 - **Model-training** [WRITE BRIEF SENTENCE HERE]. 
 - **Model-service** applies preprocessing and uses the model to return a prediction.
 - **Lib-version** [WRITE BRIEF SENTENCE HERE]. 
