@@ -40,6 +40,8 @@ The application is structured in the following way:
 - **Lib-ml Repository**
     - `preprocess_sentiment_analysis/preprocess.py` is used to preprocess a given dataset by cleaning the text (removing non-alphabetical characters, converting all words to lowercase, removing stopwords, and Porter stemming). It saves the results into a processed CSV file.
 - **Lib-version**
+    - `src/lib_version/version_awerenes.py` is contains the package code used to retrieve the packages version at runtime.
+    - `src/lib_version/VERSION` is the config file that contains the build version. This file is used at build time to determine the versioning.
 - **Model training**
     - `train.py` is used to train the restaurant sentiment analysis model.
     - `data/a1_RestaurantReviews_HistoricDump.tsv` is the training data that has been used to train the model.
