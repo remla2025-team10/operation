@@ -34,7 +34,7 @@
         state: latest
         update_cache: true
 
-    ######### Secret Key Authentication ###########
+    ########### Secret Key Authentication ###########
     - name: Ensure .ssh directory exists
       file:
         path: /home/vagrant/.ssh
@@ -66,7 +66,7 @@
       notify: Restart SSH
 
 
-    ######### System Configuration ###########
+    ########### System Configuration ###########
     # Dynamic hosts file management
     - name: Update /etc/hosts with cluster nodes
       blockinfile:
@@ -200,7 +200,7 @@
         enabled: yes
 
 
-    ########## Kubernetes Installation ###########
+    ########### Kubernetes Installation ###########
     - name: Add Kubernetes apt-key (Step 9)
       get_url:
         url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
