@@ -67,6 +67,20 @@
 
 
     ######### System Configuration ###########
+    # Dynamic hosts file management
+    - name: Update /etc/hosts with cluster nodes
+      blockinfile:
+        path: /etc/hosts
+        backup: yes
+        block: |
+          # Kubernetes Cluster Nodes - Auto Generated
+          192.168.56.100 ctrl
+          {% for i in range(1, worker_count|int + 1) %}
+          192.168.56.{{ i + 100 }} node-{{ i }}
+          {% endfor %}
+        marker: "# {mark} KUBERNETES CLUSTER NODES"
+
+    ## For Kubernetes ##
     # Disable swap
     - name: Disable swap (Step 5-1)
       command: swapoff -a

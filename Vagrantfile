@@ -8,6 +8,9 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "ansible/general.yaml"
     ansible.compatibility_mode = "2.0"
+    ansible.extra_vars = {
+      worker_count: WORKER_COUNT
+    }
   end
 
   # Control Node
