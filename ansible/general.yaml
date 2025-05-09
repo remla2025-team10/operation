@@ -1,0 +1,181 @@
+---
+- hosts: all
+  become: true
+  tasks:
+
+    ########### Install Required Packages ###########
+    # Set timezone (Amsterdam)
+    - name: Set timezone
+      timezone:
+        name: Europe/Amsterdam
+
+    # Update system packages
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gpg
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+          - aptitude
+        state: latest
+        update_cache: true
+    
+    ######### System Configuration ###########
+    # Disable swap
+    - name: Disable swap (Step 5-1)
+      command: swapoff -a
+      
+    - name: Remove swap from fstab (Setp 5-2)
+      replace:
+        path: /etc/fstab
+        regexp: '^([^#].*\sswap\s+sw\s+.*)$'
+        replace: '# \1'
+        
+    # Set up kernal configurations
+    - name: Load required kernel modules (Step 6)
+      modprobe:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - overlay
+        - br_netfilter
+        
+    - name: Setup required sysctl params (Step 7)
+      sysctl:
+        name: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: yes
+      loop:
+        - { key: "net.bridge.bridge-nf-call-iptables", value: "1" }
+        - { key: "net.bridge.bridge-nf-call-ip6tables", value: "1" }
+        - { key: "net.ipv4.ip_forward", value: "1" }
+
+    - name: Apply sysctl params without reboot
+      become: true
+      shell: sysctl --system
+
+    ########### Install containerd and runc ########### (Step 10)
+    # containerd
+    - name: Create directory /etc/apt/keyrings
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Fetch the Docker GPG key and save the dearmored key
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      args:
+        creates: /etc/apt/keyrings/docker.gpg
+      
+    - name: Change the permission of Docker GPG key
+      file:
+        path: /etc/apt/keyrings/docker.gpg
+        mode: '0644'
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+        filename: docker
+
+    # Install containerd 1.7.24
+    - name: Install containerd 1.7.24
+      apt:
+        name: containerd.io=1.7.24*
+        state: present
+        update_cache: yes
+
+    # Install runc 1.1.12
+    - name: Download runc 1.1.12 deb package
+      get_url:
+        url: https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64
+        dest: /usr/local/sbin/runc
+        mode: '0755'
+
+    # Configure containerd
+    - name: Create containerd directory
+      file:
+        path: /etc/containerd
+        state: directory
+        mode: '0755'
+
+    - name: Generate default containerd config
+      shell: containerd config default > /etc/containerd/config.toml
+      args:
+        creates: /etc/containerd/config.toml
+
+    - name: Configure SystemdCgroup in containerd config
+      lineinfile:
+        path: /etc/conta受测者erd/config.toml
+        regexp: '(\s+)SystemdCgroup = false'
+        line: '\1SystemdCgroup = true'
+        backrefs: yes
+
+    - name: Ensure CRI plugin is not disabled in containerd config
+      lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: 'disabled_plugins = \["cri"\]'
+        state: absent
+
+    - name: Restart containerd
+      systemd:
+        name: containerd
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
+
+
+    ########## Kubernetes Installation ###########
+    - name: Add Kubernetes apt-key (Step 9)
+      get_url:
+        url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
+        dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
+        mode: '0644'
+        force: true
+
+    - name: Add Kubernetes' APT repository
+      apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /"
+        state: present
+        update_cache: yes
+
+    # Install Kubernetes components
+    - name: Install specific Kubernetes components 1.32.4
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+        allow_downgrade: true
+      loop:
+        - kubelet=1.32.4-*
+        - kubeadm=1.32.4-*
+        - kubectl=1.32.4-*
+
+    - name: Hold Kubernetes packages at installed version
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      loop:
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: Enable the Kubelet service (Step 12)
+      service:
+        name: kubelet
+        enabled: yes
