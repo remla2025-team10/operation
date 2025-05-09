@@ -154,7 +154,7 @@
         dest: /usr/local/sbin/runc
         mode: '0755'
 
-    # Configure containerd
+    ## Configure containerd (Step 11) ##
     - name: Create containerd directory
       file:
         path: /etc/containerd
@@ -178,6 +178,19 @@
         path: /etc/containerd/config.toml
         regexp: 'disabled_plugins = \["cri"\]'
         state: absent
+
+    - name: Disable AppArmor in containerd config
+      lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: '(\s+)# disable_apparmor = false'
+        line: '\1disable_apparmor = true'
+        backrefs: yes
+      
+    - name: Update sandbox image version to 3.10
+      replace:
+        path: /etc/containerd/config.toml
+        regexp: '(\s+)sandbox_image = ".*"'
+        replace: '\1sandbox_image = "registry.k8s.io/pause:3.10"'
 
     - name: Restart containerd
       systemd:
