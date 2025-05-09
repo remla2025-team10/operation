@@ -121,7 +121,7 @@
 
     - name: Configure SystemdCgroup in containerd config
       lineinfile:
-        path: /etc/conta受测者erd/config.toml
+        path: /etc/containerd/config.toml
         regexp: '(\s+)SystemdCgroup = false'
         line: '\1SystemdCgroup = true'
         backrefs: yes
