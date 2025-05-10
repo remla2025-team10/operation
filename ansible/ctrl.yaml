@@ -2,3 +2,75 @@
 - hosts: ctrl
   become: true
   tasks:
+
+    ########### 1.2 Set up KB controller  ###########
+
+    # Step 13: Init cluster
+
+    - name: (Step 13) Check if the cluster is already initalized
+      stat:
+        path: /etc/kubernetes/admin.conf
+      register: kubeconfig
+
+    - name: (Step 13) Initialize the KB cluster
+      shell: |
+        kubeadm init \
+          --apiserver-advertise-address=192.168.56.100 \
+          --node-name ctrl \
+          --pod-network-cidr=10.244.0.0/16
+      when: not kubeconfig.stat.exists
+
+    # Step 14: Setup kubectl
+
+    - name: (Step 14) Create .kube directory for vagrant user
+      file:
+        path: /home/vagrant/.kube
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: '0755'
+    
+    - name: (Step 14) Copy admin kubeconfig to vagrant user
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/vagrant/.kube/config
+        remote_src: yes
+        owner: vagrant
+        group: vagrant
+        mode: '0644'
+
+    - name: (Step 14) Copy kubeconfig to shared folder for host access
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /vagrant/admin.conf
+        remote_src: yes
+
+    # Step 15: Create pod network
+
+    #- name: Create the pod network (flannel network plugin)
+    #  command: kubectl apply -f /vagrant/ansible/files/kube-flannel.yml --kubeconfig=/etc/kubernetes/admin.conf --validate=false
+
+    # Step 16: Install Helm
+
+    #- name: Add Helm GPG key
+    #  apt_key:
+    #    url: https://baltocdn.com/helm/signing.asc
+    #    state: present 
+    
+    #- name: Add Helm APT repo
+    #  apt_repository:
+    #    repo: deb https://baltocdn.com/helm/stable/debian/ all main
+    #    state: present
+
+    #- name: Install Helm
+    #  apt:
+    #    name: helm
+    #    update_cache: yes
+
+    # Step 17: Install Helm diff plugin
+
+    #- name: Install helm-diff plugin
+    #  become_user: vagrant
+    #  shell: helm plugin install https://github.com/databus23/helm-diff
+    #  args:
+    #    creates: /home/vagrant/.local/share/helm/plugins/helm-diff
