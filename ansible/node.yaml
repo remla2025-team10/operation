@@ -1,0 +1,4 @@
+---
+- hosts: node-1,node-2
+  become: true
+  tasks:
