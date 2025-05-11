@@ -37,12 +37,12 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  # Worker Nodes
+#   # Worker Nodes
   (1..WORKER_COUNT).each do |i|
     config.vm.define "node-#{i}" do |node|
       node.vm.hostname = "node-#{i}"
       node.vm.network "private_network", ip: "192.168.56.#{i + 100}"
-      
+
       # Worker node basic setup
       node.vm.provider "virtualbox" do |vb|
         # VM memory settings

@@ -9,31 +9,6 @@
       timezone:
         name: Europe/Amsterdam
 
-    # Update system packages
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-
-    - name: Upgrade all packages
-      apt:
-        upgrade: dist
-
-    - name: Install required system packages
-      apt:
-        pkg:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - gpg
-          - software-properties-common
-          - python3-pip
-          - virtualenv
-          - python3-setuptools
-          - aptitude
-        state: latest
-        update_cache: true
-
     ########### Secret Key Authentication ###########
     - name: Ensure .ssh directory exists
       file:
@@ -85,20 +60,36 @@
     - name: Disable swap (Step 5-1)
       command: swapoff -a
       
-    - name: Remove swap from fstab (Setp 5-2)
-      replace:
+    - name: Remove swap entry from /etc/fstab (Step 5-2)
+      lineinfile:
         path: /etc/fstab
-        regexp: '^([^#].*\sswap\s+sw\s+.*)$'
-        replace: '# \1'
+        regexp: '^.*swap.*'
+        state: absent
         
-    # Set up kernal configurations
-    - name: Load required kernel modules (Step 6)
+    # Set up kernel configurations
+    - name: Load required kernel modules (Step 6.1)
+      copy:
+        dest: /etc/modules-load.d/k8s.conf
+        content: |
+          overlay
+          br_netfilter
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Load br_netfilter kernel module (Step 6.2)
       modprobe:
-        name: "{{ item }}"
+        name: br_netfilter
         state: present
-      loop:
-        - overlay
-        - br_netfilter
+
+    - name: Ensure br_netfilter is loaded on boot (Step 6.3)
+      copy:
+        dest: /etc/modules-load.d/k8s.conf
+        content: |
+          br_netfilter
+        owner: root
+        group: root
+        mode: '0644'
         
     - name: Setup required sysctl params (Step 7)
       sysctl:
@@ -115,44 +106,67 @@
       become: true
       shell: sysctl --system
 
-    ########### Install containerd and runc ########### (Step 10)
-    # containerd
-    - name: Create directory /etc/apt/keyrings
-      file:
-        path: /etc/apt/keyrings
-        state: directory
-        mode: '0755'
-
-    - name: Fetch the Docker GPG key and save the dearmored key
-      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-      args:
-        creates: /etc/apt/keyrings/docker.gpg
-      
-    - name: Change the permission of Docker GPG key
-      file:
-        path: /etc/apt/keyrings/docker.gpg
+    - name: Generate /etc/hosts dynamically for worker nodes (Step 8)
+      blockinfile:
+        path: /etc/hosts
+        block: |
+          {% for i in range(1, worker_count + 1) %}
+          node-{{ i }} 192.168.56.{{ 100 + i }}
+          {% endfor %}
+        create: yes
+        owner: root
+        group: root
         mode: '0644'
 
-    - name: Add Docker repository
-      apt_repository:
-        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-        state: present
-        filename: docker
+    - name: Add Kubernetes GPG key (Step 9)
+      shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      become: yes
 
-    # Install containerd 1.7.24
-    - name: Install containerd 1.7.24
+    - name: Add Kubernetes APT repository (Step 9.1)
+      apt_repository:
+        repo: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /'
+        state: present
+        filename: kubernetes
+      become: yes
+
+    - name: Update apt cache (Step 9.2)
+      ansible.builtin.apt:
+        update_cache: yes
+      become: yes
+
+    ########### Install containerd and runc ########### (Step 10)
+    # containerd
+    - name: Install containerd (1.7.24)
       apt:
-        name: containerd.io=1.7.24*
+        name: containerd=1.7.24*
         state: present
         update_cache: yes
-        allow_downgrade: true
 
-    # Install runc 1.1.12
-    - name: Download runc 1.1.12 deb package
-      get_url:
-        url: https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64
-        dest: /usr/local/sbin/runc
-        mode: '0755'
+    - name: Install runc (1.1.12)
+      apt:
+        name: runc=1.1.12*
+        state: present
+        update_cache: yes
+
+    - name: Install kubeadm (1.32.4)
+      apt:
+        name: kubeadm=1.32.4*
+        state: present
+        update_cache: yes
+
+    - name: Install kubelet (1.32.4)
+      apt:
+        name: kubelet=1.32.4*
+        state: present
+        update_cache: yes
+
+    - name: Install kubectl (1.32.4)
+      apt:
+        name: kubectl=1.32.4*
+        state: present
+        update_cache: yes
 
     ## Configure containerd (Step 11) ##
     - name: Create containerd directory
@@ -198,33 +212,6 @@
         state: restarted
         daemon_reload: yes
         enabled: yes
-
-
-    ########### Kubernetes Installation ###########
-    - name: Add Kubernetes apt-key (Step 9)
-      get_url:
-        url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
-        dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
-        mode: '0644'
-        force: true
-
-    - name: Add Kubernetes' APT repository
-      apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /"
-        state: present
-        update_cache: yes
-
-    # Install Kubernetes components
-    - name: Install specific Kubernetes components 1.32.4
-      apt:
-        name: "{{ item }}"
-        state: present
-        update_cache: true
-        allow_downgrade: true
-      loop:
-        - kubelet=1.32.4-*
-        - kubeadm=1.32.4-*
-        - kubectl=1.32.4-*
 
     - name: Hold Kubernetes packages at installed version
       dpkg_selections:
