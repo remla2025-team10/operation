@@ -1,0 +1,4 @@
+---
+- hosts: ctrl
+  become: true
+  tasks:

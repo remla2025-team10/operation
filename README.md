@@ -12,6 +12,13 @@ docker-compose up
 
 You can then access the application at [http://localhost:8080](http://localhost:8080). Here, you may enter a review into the textbox and query for a prediction.
 
+## Vagrant Setup
+If you want to run the application in a Vagrant environment, you can do so by running the following commands:
+```bash
+vagrant up
+```
+
+
 ### Additional startup configuration
 There are also several environment variables which can be changed:
 ```bash
