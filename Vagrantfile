@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
       # VM memory settings
       # vb.memory = 4096
       vb.memory = 2048
-      vb.cpus = 1
+      vb.cpus = 2
       vb.name = "k8s-controller"
       # Uncomment if encounter startup issues
       vb.customize ["modifyvm", :id, "--usb", "off"]
