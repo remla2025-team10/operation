@@ -12,12 +12,6 @@ docker-compose up
 
 You can then access the application at [http://localhost:8080](http://localhost:8080). Here, you may enter a review into the textbox and query for a prediction.
 
-## Vagrant Setup
-If you want to run the application in a Vagrant environment, you can do so by running the following commands:
-```bash
-vagrant up
-```
-
 
 ### Additional startup configuration
 There are also several environment variables which can be changed:
@@ -31,7 +25,44 @@ APP_PORT=8080
 You can either change these manually, or when running `docker-compose up` like so:
 ```bash
  APP_PORT=5000 MODEL_SERVICE_PORT=3030 docker-compose up
- ```
+```
+
+## Kubernetes Cluster Setup
+
+This repository includes configuration for deploying a Kubernetes cluster using Vagrant and Ansible. The setup consists of:
+- 1 control node (ctrl)
+- 2 worker nodes by default (configurable)
+
+The cluster uses Flannel for pod networking and includes Helm for package management.
+
+### Vagrant Setup
+
+Make sure you have [Vagrant](https://www.vagrantup.com/) and [Ansible](https://www.ansible.com/) installed.
+
+From the directory containing your `Vagrantfile`, run:
+```bash
+vagrant up
+```
+
+You can customize the Vagrant deployment using environment variables:
+
+```bash
+# Set the number of worker nodes (default is 2)
+WORKER_COUNT=3 vagrant up
+```
+
+To apply the Ansible playbook, run:
+```bash
+vagrant provision
+```
+
+### System Requirements
+
+The Kubernetes cluster requires:
+- The default RAM requirement is 4GB for the control node and 6 GB for each worker node.
+- The default CPU requirement is 2 CPUs for each node. 
+- You can change these in the Vagrantfile.
+
 
 ## Relevant Files and Information
 The application is structured in the following way:
