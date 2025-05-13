@@ -67,6 +67,20 @@ After successful provisioning, you can SSH into the control node and use kubectl
 vagrant ssh ctrl
 ```
 
+### Finalize cluster setup
+Finally, you can run the following command from the host to finalize the cluster setup:
+```bash
+ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml 
+```
+
+When everything is complete, the Kubernetes Dashboard should be accessible at [http://192.168.56.90/](http://192.168.56.90/).
+
+To log in, generate an admin token by running this command on the control node:
+```bash
+kubectl -n kubernetes-dashboard create token admin-user
+```
+Copy the output token and use it to log in to the dashboard.
+
 ### System Requirements
 
 The Kubernetes cluster requires:
