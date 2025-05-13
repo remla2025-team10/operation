@@ -1,4 +1,17 @@
 ---
-- hosts: node-1,node-2
+- hosts: node1, node2
   become: true
-  tasks:
+  tasks: 
+    - name: Generate kubeadm join command
+      ansible.builtin.command: kubeadm token create --print-join-command
+      register: join_cmd
+      delegate_to: code
+      run_once: true
+      changed_when: false
+      check_mode: false
+      vars:
+        ansible_delegated_vars:
+          ansible_become: yes 
+
+    - name: Join worker nodes to the Kubernetes cluster
+      ansible.builtin.shell: " {{ join_cmd.stdout }} "
