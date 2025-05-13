@@ -30,8 +30,10 @@ You can either change these manually, or when running `docker-compose up` like s
 ## Kubernetes Cluster Setup
 
 This repository includes configuration for deploying a Kubernetes cluster using Vagrant and Ansible. The setup consists of:
-- 1 control node (ctrl)
-- 2 worker nodes by default (configurable)
+- 1 control node 
+    - named `ctrl`, runs on `192.168.56.100`
+- 2 worker nodes by default 
+    - configurable, named `node-1` and `node-2`, run on `192.168.56.101` and `192.168.56.102`
 
 The cluster uses Flannel for pod networking and includes Helm for package management.
 
@@ -56,17 +58,31 @@ To apply the Ansible playbook, run:
 vagrant provision
 ```
 
+### Accessing the Kubernetes Cluster
+
+After successful provisioning, you can SSH into the control node and use kubectl:
+
+```bash
+# SSH into control node
+vagrant ssh ctrl
+```
+
 ### System Requirements
 
 The Kubernetes cluster requires:
 - The default RAM requirement is 4GB for the control node and 6 GB for each worker node.
 - The default CPU requirement is 2 CPUs for each node. 
-- You can change these in the Vagrantfile.
+- You can change these in the `Vagrantfile`.
 
 
 ## Relevant Files and Information
 The application is structured in the following way:
 - **Operation Repository** is the starting point of the application and contains the files required to run the application, as explained above
+    - `Vagrantfile`: Defines the virtual machines configuration.
+    - `ansible/general.yaml`: Configures all VMs with necessary prerequisites for Kubernetes, including required system settings.
+    - `ansible/ctrl.yaml`: Initializes the Kubernetes cluster on the control node.
+    - `ansible/node.yaml`: Configures worker nodes and joins them to the Kubernetes cluster.
+    - `ansible/finalization.yaml`: Installed MetalLB, NGinx Ingress, Dashboard, (and Istio) for load balancing and routing
 - **App Service Repository** holds the relevant frontend and backend code for the application
     - `app/models/model_handler.py` makes a post request to the model-service to get a sentiment prediction
     - `app/routes/__init__.py` defines the routes used by the backend application
