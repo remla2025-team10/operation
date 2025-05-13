@@ -124,3 +124,12 @@ All core components of the assignment have been implemented.
 
 #### What is missing / needs improvement
 - **Automated versioning** is implemented only in the lib-version repository on pushes with a release or version tag. It creates releases on main with the correct stable version tag, also pre-release commits and tags automatically on main. Though these pre-release tags are not sub-ordered for now.
+
+### Assignment 2
+#### What was done
+All core components of the assignment have been implemented. 
+
+- **1.1 Basic VM Setup** Configured VMs and networking for Kubernetes. See `general.yaml`.
+- **1.2 Setting up the Kubernetes Controller** Initialized the cluster and set up kubectl, Flannel, and Helm on the controller node. See `ctrl.yaml`.
+- **1.3 Setting up Kubernetes Workers** Joined worker nodes to the cluster using a token from the controller. See `node.yaml`.
+- **1.4 Finalizing the Cluster Setup** Installed MetalLB, NGinx Ingress, Dashboard, (and Istio) for load balancing and routing. See `finalization.yml`.
