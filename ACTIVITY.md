@@ -23,20 +23,20 @@
 
 -- Boris: --
 <bR>Created PR: https://github.com/remla2025-team10/operation/pull/6
-<br>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/4, https://github.com/remla2025-team10/operation/pull/5
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/4, https://github.com/remla2025-team10/operation/pull/5, https://github.com/remla2025-team10/operation/pull/8
 
 -- Haoran Tang --
 <bR>Created PR: https://github.com/remla2025-team10/operation/pull/3
-<br>Approved PR: https://github.com/remla2025-team10/operation/pull/4, https://github.com/remla2025-team10/operation/pull/5
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/4, https://github.com/remla2025-team10/operation/pull/5, https://github.com/remla2025-team10/operation/pull/8
 
 -- Sahar Marossi --
 <bR>Created PR: https://github.com/remla2025-team10/operation/pull/4
-<bR>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/5
+<bR>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/5, https://github.com/remla2025-team10/operation/pull/8, https://github.com/remla2025-team10/operation/pull/6
 
 -- Maosheng Jiang --
 <bR>Created PR: https://github.com/remla2025-team10/operation/pull/5
-<bR>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/4
+<bR>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/4, https://github.com/remla2025-team10/operation/pull/8, https://github.com/remla2025-team10/operation/pull/6
 
 -- Koen Bron --
-<bR>Created PR:
-<bR>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/4, https://github.com/remla2025-team10/operation/pull/5
+<bR>Created PR: https://github.com/remla2025-team10/operation/pull/8
+<bR>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/4, https://github.com/remla2025-team10/operation/pull/5, https://github.com/remla2025-team10/operation/pull/6
