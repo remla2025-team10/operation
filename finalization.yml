@@ -1,0 +1,53 @@
+---
+- name: Finalizing Cluster Setup
+  hosts: all
+  become: true
+  tasks:
+    ########## Install MetalLB ##########
+    - name: Copy MetalLB to VM
+      copy:
+        src: ansible/files/metallb-native.yaml
+        dest: /tmp/metallb-native.yaml
+        mode: '0644'
+
+    - name: Install MetalLB
+      become_user: vagrant
+      shell: kubectl apply -f /tmp/metallb-native.yaml
+
+    - name: Add IPAddressPool
+      copy:
+        dest: /etc/kubernetes/ip-address-pool.yaml
+        content: |
+          apiVersion: metallb.io/v1beta1
+          kind: IPAddressPool
+          metadata:
+            name: ip-address-pool
+            namespace: metallb-system
+          spec:
+            addresses:
+            - 192.168.56.90-192.168.56.99
+    
+    - name: Apply IPAddressPool
+      become_user: vagrant
+      shell: |
+        kubectl apply -f /etc/kubernetes/ip-address-pool.yaml
+    
+    - name: Configure L2Advertisement
+      copy:
+        dest: /etc/kubernetes/l2-advertisement.yaml
+        content: |
+          apiVersion: metallb.io/v1beta1
+          kind: L2Advertisement
+          metadata:
+            name: l2-advertisement
+            namespace: metallb-system
+
+    - name: Apply L2Advertisement
+      become_user: vagrant
+      shell:
+        kubectl apply -f /etc/kubernetes/l2-advertisement.yaml
+
+    - name: Wait for MetalLB
+      become_user: vagrant
+      shell: |
+        kubectl wait -n metallb-system -l app=metallb,component=controller --for=condition=ready pod --timeout=60s
