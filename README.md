@@ -12,12 +12,6 @@ docker-compose up
 
 You can then access the application at [http://localhost:8080](http://localhost:8080). Here, you may enter a review into the textbox and query for a prediction.
 
-## Vagrant Setup
-If you want to run the application in a Vagrant environment, you can do so by running the following commands:
-```bash
-vagrant up
-```
-
 
 ### Additional startup configuration
 There are also several environment variables which can be changed:
@@ -31,11 +25,78 @@ APP_PORT=8080
 You can either change these manually, or when running `docker-compose up` like so:
 ```bash
  APP_PORT=5000 MODEL_SERVICE_PORT=3030 docker-compose up
- ```
+```
+
+## Kubernetes Cluster Setup
+
+This repository includes configuration for deploying a Kubernetes cluster using Vagrant and Ansible. The setup consists of:
+- 1 control node 
+    - named `ctrl`, runs on `192.168.56.100`
+- 2 worker nodes by default 
+    - configurable, named `node-1` and `node-2`, run on `192.168.56.101` and `192.168.56.102`
+
+The cluster uses Flannel for pod networking and includes Helm for package management.
+
+### Vagrant Setup
+
+Make sure you have [Vagrant](https://www.vagrantup.com/) and [Ansible](https://www.ansible.com/) installed.
+
+From the directory containing your `Vagrantfile`, run:
+```bash
+vagrant up
+```
+
+You can customize the Vagrant deployment using environment variables:
+
+```bash
+# Set the number of worker nodes (default is 2)
+WORKER_COUNT=3 vagrant up
+```
+
+To apply the Ansible playbook, run:
+```bash
+vagrant provision
+```
+
+### Accessing the Kubernetes Cluster
+
+After successful provisioning, you can SSH into the control node and use kubectl:
+
+```bash
+# SSH into control node
+vagrant ssh ctrl
+```
+
+### Finalize cluster setup
+Finally, you can run the following command from the host to finalize the cluster setup:
+```bash
+ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml 
+```
+
+When everything is complete, the Kubernetes Dashboard should be accessible at [http://192.168.56.90/](http://192.168.56.90/).
+
+To log in, generate an admin token by running this command on the control node:
+```bash
+kubectl -n kubernetes-dashboard create token admin-user
+```
+Copy the output token and use it to log in to the dashboard.
+
+### System Requirements
+
+The Kubernetes cluster requires:
+- The default RAM requirement is 4GB for the control node and 6 GB for each worker node.
+- The default CPU requirement is 2 CPUs for each node. 
+- You can change these in the `Vagrantfile`.
+
 
 ## Relevant Files and Information
 The application is structured in the following way:
 - **Operation Repository** is the starting point of the application and contains the files required to run the application, as explained above
+    - `Vagrantfile`: Defines the virtual machines configuration.
+    - `ansible/general.yaml`: Configures all VMs with necessary prerequisites for Kubernetes, including required system settings.
+    - `ansible/ctrl.yaml`: Initializes the Kubernetes cluster on the control node.
+    - `ansible/node.yaml`: Configures worker nodes and joins them to the Kubernetes cluster.
+    - `ansible/finalization.yaml`: Installed MetalLB, NGinx Ingress, Dashboard, (and Istio) for load balancing and routing
 - **App Service Repository** holds the relevant frontend and backend code for the application
     - `app/models/model_handler.py` makes a post request to the model-service to get a sentiment prediction
     - `app/routes/__init__.py` defines the routes used by the backend application
@@ -77,3 +138,12 @@ All core components of the assignment have been implemented.
 
 #### What is missing / needs improvement
 - **Automated versioning** is implemented only in the lib-version repository on pushes with a release or version tag. It creates releases on main with the correct stable version tag, also pre-release commits and tags automatically on main. Though these pre-release tags are not sub-ordered for now.
+
+### Assignment 2
+#### What was done
+All core components of the assignment have been implemented. 
+
+- **1.1 Basic VM Setup** Configured VMs and networking for Kubernetes. See `general.yaml`.
+- **1.2 Setting up the Kubernetes Controller** Initialized the cluster and set up kubectl, Flannel, and Helm on the controller node. See `ctrl.yaml`.
+- **1.3 Setting up Kubernetes Workers** Joined worker nodes to the cluster using a token from the controller. See `node.yaml`.
+- **1.4 Finalizing the Cluster Setup** Installed MetalLB, NGinx Ingress, Dashboard, for load balancing and routing. See `finalization.yml`.
