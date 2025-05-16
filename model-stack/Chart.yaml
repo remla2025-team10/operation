@@ -1,0 +1,5 @@
+apiVersion: v2
+name: model-stack
+description: The helm chart for deploying the model and app service for REMLA-2025 group 10's project.
+version: 0.1.0
+appVersion: "1.0"

@@ -1,0 +1,14 @@
+modelService:
+  name: model-service
+  image: ghcr.io/remla2025-team10/model-service:v0.0.5
+  port: 3000
+
+appService:
+  name: app-service
+  image: ghcr.io/remla2025-team10/app-service:v0.5.2
+  port: 8080
+  modelServiceUrl: http://{{ .Release.Name }}-model-service:3000
+
+ingress:
+  enabled: true
+  host: ""
