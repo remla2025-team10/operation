@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.modelService.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.modelService.name }}
+    spec:
+      containers:
+        - name: model-service
+          image: {{ .Values.modelService.image }}
+          ports:
+            - containerPort: {{ .Values.modelService.port }}
+          env:
+            - name: PORT
+              value: "{{ .Values.modelService.port }}"
+          volumeMounts:
+            - name: model-volume
+              mountPath: /model-service/models
+      volumes:
+        - name: model-volume
+          hostPath:
+            path: /mnt/shared
+            type: Directory
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.appService.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.appService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.appService.name }}
+    spec:
+      containers:
+        - name: app
+          image: {{ .Values.appService.image }}
+          ports:
+            - containerPort: {{ .Values.appService.port }}
+          env:
+            - name: PORT
+              value: "{{ .Values.appService.port }}"
+            - name: MODEL_SERVICE_URL
+              value: "{{ .Values.appService.modelServiceUrl }}"
+
