@@ -39,9 +39,10 @@ metadata:
     {{- end }}
 spec:
   endpoints:
-  - port: http  # IMPORTANT: This must match the port name in the service definition
+  - port: http
     {{- if .Values.serviceMonitor.path }}
     path: /metrics
+    {{- end }}
     interval: {{ .Values.serviceMonitor.interval }}
     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
   namespaceSelector:
