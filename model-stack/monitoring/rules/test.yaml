@@ -9,5 +9,6 @@ spec:
   groups:
     - name: always-firing.rules
       rules:
-        - alert: NewAlertTest
+        - alert: BrandNewAlert
           expr: vector(1)
+          for: 15s

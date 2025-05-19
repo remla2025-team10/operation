@@ -175,10 +175,6 @@ kubectl port-forward svc/<release-name>-app-service 8080:8080
 Now you can access the app via `http://localhost:8080/`
 
 #### Access Prometheus and Grafana
-### 5. Alerts
-
-#TODO: Maybe add ingress to make port-forwarding these not necessary
-
 If you have confirmed that the services for prometheus and grafana are running, you can access their dashboards with the following command (tip: launch new terminals for both services because the port-forwarding command is blocking):
 
 Prometheus on localhost:9090
@@ -192,10 +188,12 @@ kubectl port-forward svc/myprom-grafana 8001:80
 ```
 
 Log in wiht username: `admin` and password: `prom-operator`
+### 5. Alerts
+
 To configure alerts to your email, you first need to create a secret for the sender gmail app key (for authentication). For testing purposes we provide you with the actual app key, but this will not be shared in the final version:
 ```bash
 kubectl create secret generic smtp-password-secret \
-  --from-literal=smtp_passwordku='lmyl nlxo hjdc hpzn' \
+  --from-literal=smtp_password='lmyl nlxo hjdc hpzn' \
   -n default
 ``` 
 
