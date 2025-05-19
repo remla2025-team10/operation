@@ -73,7 +73,27 @@ Finally, you can run the following command from the host to finalize the cluster
 ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml 
 ```
 
-When everything is complete, the Kubernetes Dashboard should be accessible at [http://192.168.56.90/](http://192.168.56.90/).
+#### Local DNS Resolution
+On your host machine, make sure to add `app.local` and `dashboard.local` in your `/etc/hosts` file:
+
+```bash
+sudo nano /etc/hosts
+```
+
+Add the following line at the end:
+```bash
+192.168.56.90  app.local dashboard.local
+```
+
+Save and exit (`Ctrl + O`, then `Enter`, then `Ctrl + X`)
+
+Finally, flush the DNS cache:
+
+```bash
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+```
+
+When everything is complete, the Kubernetes Dashboard should be accessible at [dashboard.local](dashboard.local) and our app should be accessible at [app.local](app.local).
 
 To log in, generate an admin token by running this command on the control node:
 ```bash
@@ -128,8 +148,14 @@ helm install myprom prom-repo/kube-prometheus-stack
 ```
 
 #### 3. Deployment
+Manually create a `/mnt/shared` directory:
+```bash
+minikube ssh
+sudo mkdir -p /mnt/shared
+exit
+```
 
-First navigate to the model-stack directory (which stores the helm chart)
+Then navigate to the model-stack directory (which stores the helm chart)
 ```bash
 cd operation/model-stack
 ```
@@ -140,8 +166,6 @@ helm install <release-name> . \
 ```
 
 #### 4. Port forward
-
-TODO: Add Ingress instructions
 
 Run the following to port forward the app service: 
 ```
