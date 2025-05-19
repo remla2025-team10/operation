@@ -188,23 +188,7 @@ kubectl port-forward svc/myprom-grafana 8001:80
 ```
 
 Log in wiht username: `admin` and password: `prom-operator`
-<<<<<<< HEAD
-#### Add grafana dashboard (optional)
-This application includes a custom Grafana dashboard to monitor its key metrics.
 
-1.  The dashboard definition is located at the root `model.json` in this repository.
-2.  Open your Grafana instance.
-3.  On the left sidebar, hover over the "Dashboards" icon (four squares) and click "+ Import".
-4.  Click "Upload JSON file" and select the `my-application-dashboard.json` file.
-5.  Alternatively, you can copy the content of the JSON file and paste it into the "Import via panel json" text area.
-6.  Adjust the dashboard Name and Folder if desired.
-7.  **Crucially, select your Prometheus data source** from the dropdown that appears for any data source placeholders in the dashboard. It should match the name used when the dashboard was created (e.g., "prometheus").
-8.  Click "Import".
-
-The dashboard should now be available.
-
-=======
->>>>>>> origin/finish-alerts
 ### 5. Alerts
 
 To configure alerts to your email, you first need to create a secret for the sender gmail app key (for authentication). For testing purposes we provide you with the actual app key, but this will not be shared in the final version:
