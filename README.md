@@ -206,10 +206,12 @@ kubectl port-forward svc/myprom-grafana 8001:80
 ```
 
 Log in wiht username: `admin` and password: `prom-operator`
+### 5. Alerts
+
 To configure alerts to your email, you first need to create a secret for the sender gmail app key (for authentication). For testing purposes we provide you with the actual app key, but this will not be shared in the final version:
 ```bash
 kubectl create secret generic smtp-password-secret \
-  --from-literal=smtp_passwordku='lmyl nlxo hjdc hpzn' \
+  --from-literal=smtp_password='lmyl nlxo hjdc hpzn' \
   -n default
 ``` 
 
