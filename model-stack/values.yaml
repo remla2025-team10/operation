@@ -20,3 +20,6 @@ serviceMonitor:
   scrapeTimeout: 10s
   additionalLabels:
     release: prometheus
+
+alertmanager:
+  receiverEmail: alerts.remla.team10@gmail.com
