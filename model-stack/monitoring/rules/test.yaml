@@ -4,7 +4,7 @@ metadata:
   name: always-firing-test
   namespace: monitoring
   labels:
-    release: prometheus-stack
+    release: myprom
 spec:
   groups:
     - name: always-firing.rules
