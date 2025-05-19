@@ -1,13 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: always-firing-test
-  namespace: monitoring
+  name: always-firing-test-2
+  namespace: default
   labels:
     release: myprom
 spec:
   groups:
     - name: always-firing.rules
       rules:
-        - alert: AlwaysFiringTestAlert
+        - alert: NewAlertTest
           expr: vector(1)
