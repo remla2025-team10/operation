@@ -108,6 +108,58 @@ The Kubernetes cluster requires:
 - The default CPU requirement is 2 CPUs for each node. 
 - You can change these in the `Vagrantfile`.
 
+## Model stack Helm chart deployment
+
+A Helm chart deploying 'model-service' and 'app-service' into a local Kubernetes cluster using **Minikube**.
+
+### Requirements
+
+- [Minikube](https://minikube.sigs.k8s.io/)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/)
+- [Helm](https://helm.sh/)
+
+### Deployment
+
+#### 1. Start a Minikube Cluster
+
+```bash
+minikube start
+```
+
+Enable the ingress addon:
+
+```bash
+minikube addons enable ingress
+```
+
+Manually create a `/mnt/shared` directory:
+```bash
+minikube ssh
+sudo mkdir -p /mnt/shared
+exit
+```
+
+#### 2. Deployment
+
+First navigate to the model-stack directory (which stores the helm chart)
+```bash
+cd operation/model-stack
+```
+Then, install the helm release
+```
+helm install <release-name> . \
+  --set appService.modelServiceUrl=http://<release-name>-model-service:3000
+```
+
+#### 4. Port forward
+
+Run the following to port forward the app service: 
+```bash
+kubectl port-forward svc/<release-name>-app-service 8080:8080
+```
+
+Now you can access the app via `http://localhost:8080/`
+
 
 ## Relevant Files and Information
 The application is structured in the following way:
