@@ -52,7 +52,7 @@
 
 -- Sahar Marossi --
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/10 (A3)
-<br>Approved PR: https://github.com/remla2025-team10/operation/pull/9, https://github.com/remla2025-team10/operation/pull/13 (A3)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/9, https://github.com/remla2025-team10/operation/pull/13, https://github.com/remla2025-team10/operation/pull/14, https://github.com/remla2025-team10/operation/pull/15 (A3)
 
 -- Maosheng Jiang --
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/9 (A3)
