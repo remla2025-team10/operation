@@ -175,6 +175,20 @@ kubectl port-forward svc/<release-name>-app-service 8080:8080
 Now you can access the app via `http://localhost:8080/`
 
 #### Access Prometheus and Grafana
+
+#### Add grafana dashboard (optional)
+This application includes a custom Grafana dashboard to monitor its key metrics.
+
+1.  The dashboard definition is located at `grafana/dashboards/my-application-dashboard.json` in this repository.
+2.  Open your Grafana instance.
+3.  On the left sidebar, hover over the "Dashboards" icon (four squares) and click "+ Import".
+4.  Click "Upload JSON file" and select the `my-application-dashboard.json` file.
+5.  Alternatively, you can copy the content of the JSON file and paste it into the "Import via panel json" text area.
+6.  Adjust the dashboard Name and Folder if desired.
+7.  **Crucially, select your Prometheus data source** from the dropdown that appears for any data source placeholders in the dashboard. It should match the name used when the dashboard was created (e.g., "prometheus").
+8.  Click "Import".
+
+The dashboard should now be available.
 ### 5. Alerts
 
 #TODO: Maybe add ingress to make port-forwarding these not necessary
