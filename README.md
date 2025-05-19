@@ -147,3 +147,9 @@ All core components of the assignment have been implemented.
 - **1.2 Setting up the Kubernetes Controller** Initialized the cluster and set up kubectl, Flannel, and Helm on the controller node. See `ctrl.yaml`.
 - **1.3 Setting up Kubernetes Workers** Joined worker nodes to the cluster using a token from the controller. See `node.yaml`.
 - **1.4 Finalizing the Cluster Setup** Installed MetalLB, NGinx Ingress, Dashboard, for load balancing and routing. See `finalization.yml`.
+
+### Assignment 3
+#### What was done
+
+- **1.1 Migration from Docker Compose to Kubernetes** Migrated from `docker-compose` to Kubernetes using `Minikube`. Additionally deployed using `k8s`. Implemented a `helm` chart in the `model-stack` directory.
+- **1.2 Monitoring** 
