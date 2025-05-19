@@ -135,6 +135,21 @@ kubectl port-forward svc/<release-name>-app-service 8080:8080
 
 Now you can access the app via `http://localhost:8080/`
 
+### 5. Alerts
+
+To configure alerts to your email, you first need to create a secret for the sender gmail app key (for authentication). For testing purposes we provide you with the actual app key, but this will not be shared in the final version:
+```bash
+kubectl create secret generic smtp-password-secret \
+  --from-literal=smtp_passwordku='lmyl nlxo hjdc hpzn' \
+  -n default
+``` 
+
+To set your own gmail address as the target to receive the alerts, you can do:
+
+```bash
+helm upgrade <release-name> . \
+  --set alertmanager.receiverEmail=<your-email>
+```
 
 ## Relevant Files and Information
 The application is structured in the following way:
