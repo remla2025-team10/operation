@@ -175,24 +175,6 @@ kubectl port-forward svc/<release-name>-app-service 8080:8080
 Now you can access the app via `http://localhost:8080/`
 
 #### Access Prometheus and Grafana
-
-#### Add grafana dashboard (optional)
-This application includes a custom Grafana dashboard to monitor its key metrics.
-
-1.  The dashboard definition is located at `grafana/dashboards/my-application-dashboard.json` in this repository.
-2.  Open your Grafana instance.
-3.  On the left sidebar, hover over the "Dashboards" icon (four squares) and click "+ Import".
-4.  Click "Upload JSON file" and select the `my-application-dashboard.json` file.
-5.  Alternatively, you can copy the content of the JSON file and paste it into the "Import via panel json" text area.
-6.  Adjust the dashboard Name and Folder if desired.
-7.  **Crucially, select your Prometheus data source** from the dropdown that appears for any data source placeholders in the dashboard. It should match the name used when the dashboard was created (e.g., "prometheus").
-8.  Click "Import".
-
-The dashboard should now be available.
-### 5. Alerts
-
-#TODO: Maybe add ingress to make port-forwarding these not necessary
-
 If you have confirmed that the services for prometheus and grafana are running, you can access their dashboards with the following command (tip: launch new terminals for both services because the port-forwarding command is blocking):
 
 Prometheus on localhost:9090
@@ -206,10 +188,13 @@ kubectl port-forward svc/myprom-grafana 8001:80
 ```
 
 Log in wiht username: `admin` and password: `prom-operator`
+
+### 5. Alerts
+
 To configure alerts to your email, you first need to create a secret for the sender gmail app key (for authentication). For testing purposes we provide you with the actual app key, but this will not be shared in the final version:
 ```bash
 kubectl create secret generic smtp-password-secret \
-  --from-literal=smtp_passwordku='lmyl nlxo hjdc hpzn' \
+  --from-literal=smtp_password='lmyl nlxo hjdc hpzn' \
   -n default
 ``` 
 
@@ -284,4 +269,7 @@ All core components of the assignment have been implemented.
 
 - **1.1 Migration from Docker Compose to Kubernetes** Migrated from `docker-compose` to Kubernetes using `Minikube`. Additionally deployed using `k8s`. Implemented a `helm` chart in the `model-stack` directory.
 - **1.2 Monitoring** 
-Implemented usage of metrics, implemented alerts through email
+Implemented usage of metrics through grafana, implemented alerts through email
+
+### What needs to be done
+Prometheus dashboard not configured properly, so the actual prometheus rule doesn't fire, alerts should still work
