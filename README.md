@@ -112,7 +112,22 @@ Enable the ingress addon:
 minikube addons enable ingress
 ```
 
-#### 2. Deployment
+#### 2. Install Prometheus
+Add prometheus repository to your helm repositories and update the it
+```
+helm repo add prom-repo https://prometheus-community.github.io/helm-charts
+helm repo update
+```
+You can make sure it's installed with
+```
+helm repo list
+```
+Then install prometheus, you can give any prometheus release name but the default is <b>myprom</b>. If you change this be sure to also change the value of `serviceMonitor.additionalLabels.release` in `model-stack/values.yaml`.
+```
+helm install myprom prom-repo/kube-prometheus-stack
+```
+
+#### 3. Deployment
 
 First navigate to the model-stack directory (which stores the helm chart)
 ```bash
@@ -129,13 +144,27 @@ helm install <release-name> . \
 TODO: Add Ingress instructions
 
 Run the following to port forward the app service: 
-```bash
+```
 kubectl port-forward svc/<release-name>-app-service 8080:8080
 ```
 
 Now you can access the app via `http://localhost:8080/`
 
+#### Access Prometheus and Grafana
 
+#TODO: Maybe add ingress to make port-forwarding these not necessary
+
+If you have confirmed that the services for prometheus and grafana are running, you can access their dashboards with the following command (tip: launch new terminals for both services because the port-forwarding command is blocking):
+
+Prometheus on localhost:9090
+```
+kubectl port-forward svc/myprom-kube-prometheus-sta-prometheus 9090:9090
+```
+
+Grafana on localhohst:8001
+```
+kubectl port-forward svc/myprom-grafana 8001:80
+```
 ## Relevant Files and Information
 The application is structured in the following way:
 - **Operation Repository** is the starting point of the application and contains the files required to run the application, as explained above
