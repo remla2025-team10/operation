@@ -10,10 +10,10 @@ spec:
     - name: email-alert
       emailConfigs:
         - smarthost: smtp.gmail.com:587
-          to: alerts.remla.team10@gmail.com
+          to: {{ .Values.alertmanager.receiverEmail }}
           sendResolved: true
           from: alerts.remla.team10@gmail.com
           authUsername: alerts.remla.team10@gmail.com
           authPassword:
             name: smtp-password-secret
-            key: smtp_password
+            key: smtp_passwordku
