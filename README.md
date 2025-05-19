@@ -270,3 +270,4 @@ All core components of the assignment have been implemented.
 
 - **1.1 Migration from Docker Compose to Kubernetes** Migrated from `docker-compose` to Kubernetes using `Minikube`. Additionally deployed using `k8s`. Implemented a `helm` chart in the `model-stack` directory.
 - **1.2 Monitoring** 
+Implemented usage of metrics, implemented alerts through email
