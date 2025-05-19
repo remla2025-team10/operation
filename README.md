@@ -112,6 +112,13 @@ Enable the ingress addon:
 minikube addons enable ingress
 ```
 
+Manually create a `/mnt/shared` directory:
+```bash
+minikube ssh
+sudo mkdir -p /mnt/shared
+exit
+```
+
 #### 2. Deployment
 
 First navigate to the model-stack directory (which stores the helm chart)
@@ -125,8 +132,6 @@ helm install <release-name> . \
 ```
 
 #### 4. Port forward
-
-TODO: Add Ingress instructions
 
 Run the following to port forward the app service: 
 ```bash
