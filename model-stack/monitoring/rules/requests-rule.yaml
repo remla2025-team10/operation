@@ -10,7 +10,7 @@ spec:
     - name: request-rate.rules
       rules:
         - alert: RequestsPerMinute
-          expr: sum(rate(num_requests[1m])) > 15
+          expr: sum(rate(flask_http_request_total[1m])) > 15
           for: 2m
           labels:
             severity: warning
