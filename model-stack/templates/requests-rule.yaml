@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: request-rate-alert
+  namespace: monitoring
+  labels:
+    release: prometheus-stack
+spec:
+  groups:
+    - name: request-rate.rules
+      rules:
+        - alert: RequestsPerMinute
+          expr: sum(rate(flask_http_request_total[1m])) > 15
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: ">15 requests per minute"
