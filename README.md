@@ -161,10 +161,12 @@ Prometheus on localhost:9090
 kubectl port-forward svc/myprom-kube-prometheus-sta-prometheus 9090:9090
 ```
 
-Grafana on localhohst:8001
+Grafana on localhost:8001
 ```
 kubectl port-forward svc/myprom-grafana 8001:80
 ```
+
+Log in wiht username: `admin` and password: `prom-operator`
 ## Relevant Files and Information
 The application is structured in the following way:
 - **Operation Repository** is the starting point of the application and contains the files required to run the application, as explained above
