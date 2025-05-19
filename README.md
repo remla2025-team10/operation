@@ -188,6 +188,7 @@ kubectl port-forward svc/myprom-grafana 8001:80
 ```
 
 Log in wiht username: `admin` and password: `prom-operator`
+<<<<<<< HEAD
 #### Add grafana dashboard (optional)
 This application includes a custom Grafana dashboard to monitor its key metrics.
 
@@ -202,6 +203,8 @@ This application includes a custom Grafana dashboard to monitor its key metrics.
 
 The dashboard should now be available.
 
+=======
+>>>>>>> origin/finish-alerts
 ### 5. Alerts
 
 To configure alerts to your email, you first need to create a secret for the sender gmail app key (for authentication). For testing purposes we provide you with the actual app key, but this will not be shared in the final version:
