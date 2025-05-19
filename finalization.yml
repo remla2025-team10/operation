@@ -101,3 +101,23 @@
     - name: Apply Ingress Dashboard
       become_user: vagrant
       shell: kubectl apply -f /tmp/ingress-dashboard.yaml
+
+    - name: Copy Ingress App to VM
+      copy:
+        src: app-ingress/app-ingress.yaml
+        dest: /tmp/app-ingress.yaml
+        mode: '0644'
+
+    - name: Apply Ingress App
+      become_user: vagrant
+      shell: kubectl apply -f /tmp/app-ingress.yaml
+
+    - name: Deploy services
+      copy:
+        src: deployment.yaml
+        dest: /tmp/deployment.yaml
+        mode: '0644'
+
+    - name: Apply Deployment
+      become_user: vagrant
+      shell: kubectl apply -f /tmp/deployment.yaml
