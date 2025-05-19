@@ -15,8 +15,8 @@ ingress:
 
 serviceMonitor:
   enabled: true
-  namespace: "monitoring"  
+  namespace: "default"  
   interval: 15s
   scrapeTimeout: 10s
   additionalLabels:
-    release: prometheus
+    release: myprom
