@@ -209,10 +209,21 @@ helm upgrade <release-name> . \
 The application is structured in the following way:
 - **Operation Repository** is the starting point of the application and contains the files required to run the application, as explained above
     - `Vagrantfile`: Defines the virtual machines configuration.
-    - `ansible/general.yaml`: Configures all VMs with necessary prerequisites for Kubernetes, including required system settings.
-    - `ansible/ctrl.yaml`: Initializes the Kubernetes cluster on the control node.
-    - `ansible/node.yaml`: Configures worker nodes and joins them to the Kubernetes cluster.
-    - `ansible/finalization.yaml`: Installed MetalLB, NGinx Ingress, Dashboard, (and Istio) for load balancing and routing
+    - `ansible/`: Contains Ansible playbooks for automated setup and configuration of the Kubernetes cluster
+        - `general.yaml`: Configures all VMs with necessary prerequisites for Kubernetes, including required system settings.
+        - `ctrl.yaml`: Initializes the Kubernetes cluster on the control node.
+        - `node.yaml`: Configures worker nodes and joins them to the Kubernetes cluster.
+        - `finalization.yaml`: Installed MetalLB, NGinx Ingress, Dashboard, (and Istio) for load balancing and routing
+    - `model-stack/`: Contains the Helm chart for deploying the application to Kubernetes
+        - `Chart.yaml`: Metadata about the Helm chart
+        - `values.yaml`: Default configuration values for the Helm chart
+        - `templates/_helpers.tpl`: Helper templates for the Helm chart
+        - `templates/deployment.yaml`: Kubernetes deployment configurations for app and model services
+        - `templates/service.yaml`: Service definitions for inter-service communication
+        - `templates/ingress.yaml`: Ingress configuration for external access
+        - `templates/servicemonitor.yaml`: ServiceMonitor configurations for Prometheus metrics collection
+        - `templates/alertmanager-config.yaml`: AlertManager configuration for notification settings
+        - `templates/requests-rule.yaml`: Custom Prometheus alerting rules
 - **App Service Repository** holds the relevant frontend and backend code for the application
     - `app/models/model_handler.py` makes a post request to the model-service to get a sentiment prediction
     - `app/routes/__init__.py` defines the routes used by the backend application
@@ -268,8 +279,7 @@ All core components of the assignment have been implemented.
 #### What was done
 
 - **1.1 Migration from Docker Compose to Kubernetes** Migrated from `docker-compose` to Kubernetes using `Minikube`. Additionally deployed using `k8s`. Implemented a `helm` chart in the `model-stack` directory.
-- **1.2 Monitoring** 
-Implemented usage of metrics through grafana, implemented alerts through email
+- **1.2 Monitoring** Added `Prometheus` APIs in `app-service`, configured `Prometheus` with a `ServiceMonitor` to automatically collect app-specific metrics for monitoring user interactions and model performance, integrated `AlertManager` to send email alerts for high request rates, and created a `Grafana` dashboard with visualizations for all metrics.
 
 ### What needs to be done
 Prometheus dashboard not configured properly, so the actual prometheus rule doesn't fire, alerts should still work
