@@ -1,4 +1,4 @@
-# Assignment 1
+# Week 2
 -- Boris: --
 <br>Created PR: https://github.com/remla2025-team10/model-service/pull/2, https://github.com/remla2025-team10/operation/pull/1, https://github.com/remla2025-team10/operation/pull/2 (A1)
 <br>Approved PR: https://github.com/remla2025-team10/app-service/pull/2 (A1)
@@ -19,7 +19,7 @@
 <br>Created PR: https://github.com/remla2025-team10/lib-version/pull/1 (A1)
 <br>Approved PR: https://github.com/remla2025-team10/model-service/pull/2, https://github.com/remla2025-team10/operation/pull/1 (A1)
 
-# Assignment 2
+# Week 3
 
 -- Boris: --
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/6 (A2)
@@ -41,9 +41,9 @@
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/8 (A2)
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/4, https://github.com/remla2025-team10/operation/pull/5, https://github.com/remla2025-team10/operation/pull/6 (A2)
 
-# Assignment 3
+# Week 4
 -- Boris: --
-<br>https://github.com/remla2025-team10/operation/pull/16 (A3)
+<br>Created PR: https://github.com/remla2025-team10/operation/pull/16 (A3)
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/9, https://github.com/remla2025-team10/operation/pull/10 (A3)
 
 -- Haoran Tang --
