@@ -152,4 +152,12 @@ All core components of the assignment have been implemented.
 #### What was done
 
 - **1.1 Migration from Docker Compose to Kubernetes** Migrated from `docker-compose` to Kubernetes using `Minikube`. Additionally deployed using `k8s`. Implemented a `helm` chart in the `model-stack` directory.
-- **1.2 Monitoring** 
+- **1.2 Monitoring**
+
+### Assignment 4
+#### What was done
+
+- **Cookiecutter template** Refactored `model-training` to follow a cookie-cutter template.
+- **Automated tests** Implemented tests following the ML-Test score methodology, all in the `/test` folder in `model-training`.
+- **DVC pipeline** Implemented a DVC pipeline using gdrive remote storage in `model-training`.
+- **pylint confugration** `model-training` implements pylint configuration within the workflow.
