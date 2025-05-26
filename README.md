@@ -283,3 +283,14 @@ All core components of the assignment have been implemented.
 
 ### What needs to be done
 Prometheus dashboard not configured properly, so the actual prometheus rule doesn't fire, alerts should still work
+
+### Assignment 4
+#### What was done
+
+- **Cookiecutter template** Refactored `model-training` to follow a cookie-cutter template.
+- **Automated tests** Implemented tests following the ML-Test score methodology, all in the `/test` folder in `model-training`.
+- **DVC pipeline** Implemented a DVC pipeline using gdrive remote storage in `model-training`.
+- **pylint confugration** `model-training` implements pylint configuration within the workflow.
+
+### What needs to be done
+Mutamorphic testing.
