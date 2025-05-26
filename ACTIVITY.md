@@ -65,7 +65,7 @@
 # Week 5
 -- Boris: --
 <br>Created PR: https://github.com/remla2025-team10/model-training/pull/3
-<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/4, https://github.com/remla2025-team10/model-training/pull/6
+<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/4, https://github.com/remla2025-team10/model-training/pull/6, https://github.com/remla2025-team10/model-training/pull/8
 
 -- Haoran Tang --
 <br>Created PR: https://github.com/remla2025-team10/model-training/pull/6
@@ -73,11 +73,11 @@
 
 -- Sahar Marossi --
 <br>Created PR: https://github.com/remla2025-team10/model-training/pull/4
-<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/6
+<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/6, https://github.com/remla2025-team10/model-training/pull/8
 
 -- Maosheng Jiang --
 <br>Created PR: https://github.com/remla2025-team10/model-training/pull/5
-<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/4
+<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/4, https://github.com/remla2025-team10/model-training/pull/8
 
 -- Koen Bron --
 <br>Created PR: https://github.com/remla2025-team10/model-training/pull/8
