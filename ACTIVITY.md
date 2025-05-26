@@ -80,5 +80,5 @@
 <br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/4
 
 -- Koen Bron --
-<br>Created PR:
+<br>Created PR: https://github.com/remla2025-team10/model-training/pull/8
 <br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/6
