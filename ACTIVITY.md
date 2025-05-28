@@ -64,21 +64,21 @@
 
 # Week 5
 -- Boris: --
-<br>Created PR: https://github.com/remla2025-team10/model-training/pull/3
-<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/4, https://github.com/remla2025-team10/model-training/pull/6, https://github.com/remla2025-team10/model-training/pull/8
+<br>Created PR: https://github.com/remla2025-team10/model-training/pull/3 (A4)
+<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/4, https://github.com/remla2025-team10/model-training/pull/6, https://github.com/remla2025-team10/model-training/pull/8 (A4)
 
 -- Haoran Tang --
-<br>Created PR: https://github.com/remla2025-team10/model-training/pull/6
-<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/4
+<br>Created PR: https://github.com/remla2025-team10/model-training/pull/6 (A4)
+<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/4 (A4)
 
 -- Sahar Marossi --
-<br>Created PR: https://github.com/remla2025-team10/model-training/pull/4
-<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/6, https://github.com/remla2025-team10/model-training/pull/8
+<br>Created PR: https://github.com/remla2025-team10/model-training/pull/4 (A4)
+<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/6, https://github.com/remla2025-team10/model-training/pull/8 (A4)
 
 -- Maosheng Jiang --
-<br>Created PR: https://github.com/remla2025-team10/model-training/pull/5
-<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/4, https://github.com/remla2025-team10/model-training/pull/8
+<br>Created PR: https://github.com/remla2025-team10/model-training/pull/5 (A4)
+<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/4, https://github.com/remla2025-team10/model-training/pull/8 (A4)
 
 -- Koen Bron --
-<br>Created PR: https://github.com/remla2025-team10/model-training/pull/8
-<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/6
+<br>Created PR: https://github.com/remla2025-team10/model-training/pull/8 (A4)
+<br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/6 (A4)
