@@ -81,12 +81,7 @@ ansible-playbook -u vagrant -i 192.168.56.100, finalization-istio.yml
 ```
 
 #### Sticky sessions
-After applying the canary release by running:
-```bash
-cd /vagrant
-kubectl apply -f canary-release.yml
-```
-, you should be able to utilize sticky sessions to determine which app version you are routed to.
+After the above steps are complete, you should be able to utilize sticky sessions to determine which app version you are routed to.
 The users not selected for the experiment won't have the `x-user` header set, so they will be routed to v1:
 ```bash
 curl http://app.local/
