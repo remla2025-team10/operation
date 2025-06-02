@@ -1,5 +1,5 @@
 # Configurable worker count
-WORKER_COUNT = ENV['WORKER_COUNT'] ? ENV['WORKER_COUNT'].to_i : 1
+WORKER_COUNT = ENV['WORKER_COUNT'] ? ENV['WORKER_COUNT'].to_i : 2
 
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-24.04"
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
     # Control node basic setup
     ctrl.vm.provider "virtualbox" do |vb|
       # VM memory settings
-#       vb.memory = 4096
+      # vb.memory = 4096
       vb.memory = 2048
       vb.cpus = 2
       vb.name = "k8s-controller"
@@ -47,8 +47,8 @@ Vagrant.configure("2") do |config|
       node.vm.provider "virtualbox" do |vb|
         # VM memory settings
         # vb.memory = 6144
-        vb.memory = 4096
-        vb.cpus = 4
+        vb.memory = 2048
+        vb.cpus = 2
         vb.name = "k8s-worker-#{i}"
         # Uncomment if encounter startup issues
         vb.customize ["modifyvm", :id, "--usb", "off"]
