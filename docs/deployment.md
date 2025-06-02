@@ -9,8 +9,15 @@ The project deployment process consists of the following:
 - Local environment possibility with Docker Compose
 
 ## Kubernetes Cluster and Deployment Structure
+The Kubernetes cluster is first provisioned using Vagrant and Ansible. This results in the creation of a control node, which acts as the master node that orchestrates and manages everything, and a user specified number of worker nodes, each running the application workloads (pods).
 
-## Configuration and Setup Flow
+This is followed by Ansible playbook provisioning which further configures the project setup and ensures the nodes are joined in a cluster.
+
+When this is done, the cluster utilizes Flannel CNI for pod networking, MetalLB for load balancing and Ingress Controller for handling external traffic into the cluster.
+
+The applications are deployed using Helm Charts (model-stack), where an Ingress Rule routes HTTP traffic from MetalLB into the cluster, app-service service exposes the app-service pod which hosts the main application logic and further forwards HTTP requests to the model-service. Model-service Service is a ClusterIP service, meaning it is only accessible internally (by app-service), and its pod hosts the logic for interacting with the machine learning model used for sentiment analysis and its training.
+
+## Usage Flow
 
 ## Monitoring and Alerting
 
