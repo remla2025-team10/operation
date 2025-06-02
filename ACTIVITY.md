@@ -98,7 +98,7 @@
 
 -- Maosheng Jiang --
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/24 (A5)
-<br>Approved PR: https://github.com/remla2025-team10/operation/pull/23 (A5)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/23, https://github.com/remla2025-team10/operation/pull/27 (A5)
 
 -- Koen Bron --
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/29 (A5)
