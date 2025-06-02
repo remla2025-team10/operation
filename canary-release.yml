@@ -230,17 +230,24 @@ spec:
   - "app.local"
   http:
   - match:
+    - headers:
+        x-user:
+          exact: "experiment"
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: app
+        subset: v2
+      weight: 100    
+  - match:
     - uri:
         prefix: /
     route:
     - destination:
         host: app
         subset: v1
-      weight: 50
-    - destination:
-        host: app
-        subset: v2
-      weight: 50
+      weight: 100
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
