@@ -245,9 +245,21 @@ The application is structured in the following way:
     - `src/lib_version/version_awerenes.py` is contains the package code used to retrieve the packages version at runtime.
     - `src/lib_version/VERSION` is the config file that contains the build version. This file is used at build time to determine the versioning.
 - **Model training**
-    - `train.py` is used to train the restaurant sentiment analysis model.
-    - `data/a1_RestaurantReviews_HistoricDump.tsv` is the training data that has been used to train the model.
-    - `model/` contains the trained model files that is ready to use for the model-service.
+    - `data/`: The folder containing all the data files
+        - `raw/`: Original raw data dumps
+        - `processed/`: The processed data directly used by the model
+    - `models/`: Containes the models which have already been trained
+    - `restaurant_model_training/`: The main package (module) of this project
+        - `config.py`: Contains the configurations such as default values and paths
+        - `dataset.py`: Logic for loading and preprocessing the data
+        - `features.py`: Logic for creating BOW features
+        - `modeling/`: Module containing logic for model training (`train.py`) and predicting (`predict.py`)
+    - `tests/`: The test files for the model  
+        - `test_data_features.py`: Tests for data and features
+        - `test_infrastructure.py`: Tests for infrastructure
+        - `test_model_development.py`: Tests for model training, evaluation, robustness
+        - `test_monitoring.py`: Tests for model monitoring
+    - `requirements.txt`: The project dependencies
 
 ## Repository Links
 For convenience, we list links to the available repositories used in this project:
