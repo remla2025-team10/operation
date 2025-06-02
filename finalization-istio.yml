@@ -66,6 +66,10 @@
       command: kubectl label namespace default istio-injection=enabled --overwrite
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
+    - name: Label kubernetes-dashboard namespace for automatic sidecar injection
+      command: kubectl label namespace default istio-injection=enabled --overwrite
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
 
 
     - name: Deploy Prometheus addon
@@ -162,3 +166,10 @@
     - name: Create Admin User
       become_user: vagrant
       shell: kubectl apply -f /tmp/dashboard-adminuser.yaml
+
+
+    # Install Cert-Manager
+    - name: Install cert-manager with kubeconfig
+      command: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config

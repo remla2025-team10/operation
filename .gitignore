@@ -1,3 +1,4 @@
 .vagrant/
 admin.conf
 .venv/
+.idea/
