@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: request-rate-alert
-  namespace: monitoring
+  namespace: default
   labels:
     release: prometheus-stack
 spec:

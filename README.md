@@ -77,8 +77,20 @@ You can run the following command from the host to finalize the cluster setup us
 
 
 ```bash
-ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml 
+ansible-playbook -u vagrant -i 192.168.56.100, finalization-istio.yml 
 ```
+
+#### Sticky sessions
+After the above steps are complete, you should be able to utilize sticky sessions to determine which app version you are routed to.
+The users not selected for the experiment won't have the `x-user` header set. In this case, due to limitations with the sticky session header configuration, we implement 90/10 routing to v1:
+```bash
+curl http://app.local/
+```
+
+And users selected for the experiment will have `x-user: experiment` routing them to v2 them to v2r set in the request, will always be routed to v2 (weight 100):
+```bash
+curl -H "x-user: experiment" http://app.local/
+``` 
 
 #### Local DNS Resolution
 On your host machine, make sure to add `app.local` and `dashboard.local` in your `/etc/hosts` file:
