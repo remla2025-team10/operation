@@ -152,6 +152,11 @@ spec:
   - name: v2
     labels:
       version: v2
+  # Adding stickiness for pod in case we add more replicas
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpHeaderName: x-user
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
