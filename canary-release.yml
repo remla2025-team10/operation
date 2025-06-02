@@ -202,17 +202,24 @@ spec:
   - "app.local"
   http:
   - match:
+    - headers:
+        x-user:
+          exact: "experiment"
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: app
+        subset: v2
+      weight: 100    
+  - match:
     - uri:
         prefix: /
     route:
     - destination:
         host: app
         subset: v1
-      weight: 90
-    - destination:
-        host: app
-        subset: v2
-      weight: 10
+      weight: 100
 ---
 
 # Enable consistency
