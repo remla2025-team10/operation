@@ -23,7 +23,13 @@ The user begins their interaction with the application by making an HTTP request
 In case of using the Docker Compose setup, the user makes requests via configurable ports for the app/model service to achieve the same behaviour.
 
 ## Monitoring and Alerting
+Monitoring is done using Prometheus. Namely, it utilizes the following:
+- ServiceMonitor which collects the metrics from the application
+- Prometheus aggregates and stores the metrics
+- Grafana: Allows for visualization of the metrics in real time via a dashboard
+- AlertManager: Sends alerts via email when specific events occur (in our case a high request rate within 2 minutes)
 
+The metrics themselves are collected from the configured pods and services, and are then used by Prometheus for analysis.
 ## Deployment and Workflow
 
 ## Experimental Setup and Dynamic Routing
