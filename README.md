@@ -82,12 +82,12 @@ ansible-playbook -u vagrant -i 192.168.56.100, finalization-istio.yml
 
 #### Sticky sessions
 After the above steps are complete, you should be able to utilize sticky sessions to determine which app version you are routed to.
-The users not selected for the experiment won't have the `x-user` header set, so they will be routed to v1:
+The users not selected for the experiment won't have the `x-user` header set. In this case, due to limitations with the sticky session header configuration, we implement 90/10 routing to v1:
 ```bash
 curl http://app.local/
 ```
 
-And users selected for the experiment will have `x-user: experiment` header set in the request, routing them to v2:
+And users selected for the experiment will have `x-user: experiment` routing them to v2 them to v2r set in the request, will always be routed to v2 (weight 100):
 ```bash
 curl -H "x-user: experiment" http://app.local/
 ``` 
