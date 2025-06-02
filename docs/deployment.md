@@ -30,6 +30,9 @@ Monitoring is done using Prometheus. Namely, it utilizes the following:
 - AlertManager: Sends alerts via email when specific events occur (in our case a high request rate within 2 minutes)
 
 The metrics themselves are collected from the configured pods and services, and are then used by Prometheus for analysis.
-## Deployment and Workflow
+
+## Configurability
+As mentioned, the setup allows for a lot of configurability when running the deployment. This includes port mappings, image tags, paths, and environment variables.
 
 ## Experimental Setup and Dynamic Routing
+The project uses dynamic routing via the Ingress Controller which allows for A/B testing between user groups for testing new app features / versions. Sticky sessions via HTTP headers make it so the experimental setup is consistent among users, by assigning the corresponding experiment header to the chosen users.
