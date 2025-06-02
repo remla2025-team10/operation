@@ -224,6 +224,13 @@ The application is structured in the following way:
         - `templates/servicemonitor.yaml`: ServiceMonitor configurations for Prometheus metrics collection
         - `templates/alertmanager-config.yaml`: AlertManager configuration for notification settings
         - `templates/requests-rule.yaml`: Custom Prometheus alerting rules
+    - `app-ingress/app-ingress.yaml`: Define ingress configurations for application routes.
+    - `kubernetes dashboard`
+        - `dashboard-adminuser.yaml`: Define ServiceAccount and CluterRoleBinding for a KB dashboard admin user.
+        - `ingress-dashboard`: Ingress configuration for exposing the KB dashboard.
+    - `canary-release.yml`: Defines KB resources for canary deployment.
+    - `finalization-istio.yml`: Install istio service mesh and addons (prometheus, jaeger, kiali). 
+    - `rate-limiting.yaml`: Implements rate limiting using EnvoyFilter.
 - **App Service Repository** holds the relevant frontend and backend code for the application
     - `app/models/model_handler.py` makes a post request to the model-service to get a sentiment prediction
     - `app/routes/__init__.py` defines the routes used by the backend application
@@ -294,3 +301,18 @@ Prometheus dashboard not configured properly, so the actual prometheus rule does
 
 ### What needs to be done
 Mutamorphic testing.
+
+## Progress Log - Assignment 5
+### What was done
+
+- **Traffic Management** Added istio gateway: Kubernetes dashboard, kiali, prometheus, app are all accessible.
+- **Sticky Sessions** Added sticky sessions for user routing, so users with the correct header are always redirected to the experimental (v2) version of the app, while others never see it (v1)
+- **Continuous Experimentation** Added a new feature: random gifs to the sentiment analysis with a metrics route.
+- **Rate limiting** A (base) Isitio envoyfilter has been implemented that should locally rate limits to 10 requests a minute. For now, must be manually applied with `kubectl` once the app is up.
+- **Documentation** Description and model are provided in `/docs`.
+
+### What is missing / needs improvement
+
+- Documentation is incomplete. Needs `extension.md`.
+- Dashboard access must be configured properly.
+- Rate limiting needs to be hotfixed. 
