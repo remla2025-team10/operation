@@ -231,6 +231,9 @@ The application is structured in the following way:
     - `canary-release.yml`: Defines KB resources for canary deployment.
     - `finalization-istio.yml`: Install istio service mesh and addons (prometheus, jaeger, kiali). 
     - `rate-limiting.yaml`: Implements rate limiting using EnvoyFilter.
+    - `docs/`
+        - `deployment.md`: Deployment description details.
+        - `extension.md`: Extension proposal.
 - **App Service Repository** holds the relevant frontend and backend code for the application
     - `app/models/model_handler.py` makes a post request to the model-service to get a sentiment prediction
     - `app/routes/__init__.py` defines the routes used by the backend application
