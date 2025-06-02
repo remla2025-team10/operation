@@ -82,3 +82,24 @@
 -- Koen Bron --
 <br>Created PR: https://github.com/remla2025-team10/model-training/pull/8 (A4)
 <br>Approved PR: https://github.com/remla2025-team10/model-training/pull/3, https://github.com/remla2025-team10/model-training/pull/6 (A4)
+
+# Week 6
+-- Boris: --
+<br>Created PR: https://github.com/remla2025-team10/operation/pull/27 (A5)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/24, https://github.com/remla2025-team10/operation/pull/23 (A5)
+
+-- Haoran Tang --
+<br>Created PR: https://github.com/remla2025-team10/app-service/pull/6 (A5)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/23 (A5)
+
+-- Sahar Marossi --
+<br>Created PR: https://github.com/remla2025-team10/operation/pull/23 (A5)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/24 (A5)
+
+-- Maosheng Jiang --
+<br>Created PR: https://github.com/remla2025-team10/operation/pull/24 (A5)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/23 (A5)
+
+-- Koen Bron --
+<br>Created PR: 
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/24, https://github.com/remla2025-team10/operation/pull/23 (A5)
