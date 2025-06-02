@@ -173,3 +173,15 @@
       command: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
       environment:
         KUBECONFIG: /home/vagrant/.kube/config
+
+
+    # Apply canary release
+    - name: Copy canary file
+      copy:
+        src: canary-release.yml
+        dest: /tmp/canary-release.yml
+        mode: '0644'
+
+    - name: Apply Canary Release
+      become_user: vagrant
+      shell: kubectl apply -f /tmp/canary-release.yml
