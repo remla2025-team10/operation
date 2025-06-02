@@ -18,6 +18,9 @@ When this is done, the cluster utilizes Flannel CNI for pod networking, MetalLB 
 The applications are deployed using Helm Charts (model-stack), where an Ingress Rule routes HTTP traffic from MetalLB into the cluster, app-service service exposes the app-service pod which hosts the main application logic and further forwards HTTP requests to the model-service. Model-service Service is a ClusterIP service, meaning it is only accessible internally (by app-service), and its pod hosts the logic for interacting with the machine learning model used for sentiment analysis and its training.
 
 ## Usage Flow
+The user begins their interaction with the application by making an HTTP request. This request is then handled by the ingress controller to forward the request as defined by the rule. App service receives the request, processes it and internally makes a request to model-service as needed. The model-service then responds with the processed result, which the app-service returns back to the user through the ingress path.
+
+In case of using the Docker Compose setup, the user makes requests via configurable ports for the app/model service to achieve the same behaviour.
 
 ## Monitoring and Alerting
 
