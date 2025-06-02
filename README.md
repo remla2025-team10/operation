@@ -58,7 +58,10 @@ To apply the Ansible playbook, run:
 vagrant provision
 ```
 
-### Accessing the Kubernetes Cluster
+## Cluster Finalization
+We have two options for finalizing the cluster, one with Nginx Ingress Controller, and the other one with Istio Gateway.
+
+### Accessing the Kubernetes Cluster (with Nginx Ingress Controller)
 
 After successful provisioning, you can SSH into the control node and use kubectl:
 
@@ -68,7 +71,9 @@ vagrant ssh ctrl
 ```
 
 ### Finalize cluster setup
-Finally, you can run the following command from the host to finalize the cluster setup:
+You can run the following command from the host to finalize the cluster setup using Nginx Ingress Controller:
+
+
 ```bash
 ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml 
 ```
@@ -100,6 +105,54 @@ To log in, generate an admin token by running this command on the control node:
 kubectl -n kubernetes-dashboard create token admin-user
 ```
 Copy the output token and use it to log in to the dashboard.
+
+
+### Accessing the Kubernetes Cluster (with Istio Gateway)
+
+After successful provisioning, you can SSH into the control node and use kubectl:
+
+```bash
+# SSH into control node
+vagrant ssh ctrl
+```
+
+### Finalize cluster setup
+You can run the following command from the host to finalize the cluster setup using Istio Gateway:
+
+Make sure to adjust the CPU architecture in the `Download Istio` task in the `finalization-istio.yml` file. The default is `linux_arm64`, but if needed, you can change it to `linux_amd64`.
+
+```bash
+ansible-playbook -u vagrant -i 192.168.56.100, finalization-istio.yml 
+```
+
+#### Local DNS Resolution
+On your host machine, make sure to add `app.local`, `kiali.local`, `prometheus.local` and `dashboard.example.com` in your `/etc/hosts` file:
+
+```bash
+sudo nano /etc/hosts
+```
+
+Add the following line at the end:
+```bash
+192.168.56.90  app.local kiali.local prometheus.local dashboard.example.com
+```
+
+Save and exit (`Ctrl + O`, then `Enter`, then `Ctrl + X`)
+
+Finally, flush the DNS cache:
+
+```bash
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+```
+
+When everything is complete, the Kubernetes Dashboard should be accessible at [https://dashboard.example.com](https://dashboard.example.com), our app should be accessible at [app.local](app.local), the kiali dashboard should be accessible at [kiali.local](kiali.local) and the prometheus dashboard should be accessible at [prometheus.local](prometheus.local).
+
+To log in, generate an admin token by running this command on the control node:
+```bash
+kubectl -n kubernetes-dashboard create token admin-user
+```
+Copy the output token and use it to log in to the dashboard.
+
 
 ### System Requirements
 
