@@ -58,10 +58,8 @@ To apply the Ansible playbook, run:
 vagrant provision
 ```
 
-## Cluster Finalization
-We have two options for finalizing the cluster, one with Nginx Ingress Controller, and the other one with Istio Gateway.
 
-### Accessing the Kubernetes Cluster (with Nginx Ingress Controller)
+### Accessing the Kubernetes Cluster
 
 After successful provisioning, you can SSH into the control node and use kubectl:
 
@@ -70,7 +68,11 @@ After successful provisioning, you can SSH into the control node and use kubectl
 vagrant ssh ctrl
 ```
 
-### Finalize cluster setup
+
+## Cluster Finalization
+We have two options for finalizing the cluster, one with Nginx Ingress Controller, and the other one with Istio Gateway. Be sure to only use one of these two!
+
+### Finalize cluster setup (with Nginx Ingress Controller)
 You can run the following command from the host to finalize the cluster setup using Nginx Ingress Controller:
 
 
@@ -107,16 +109,7 @@ kubectl -n kubernetes-dashboard create token admin-user
 Copy the output token and use it to log in to the dashboard.
 
 
-### Accessing the Kubernetes Cluster (with Istio Gateway)
-
-After successful provisioning, you can SSH into the control node and use kubectl:
-
-```bash
-# SSH into control node
-vagrant ssh ctrl
-```
-
-### Finalize cluster setup
+### Finalize cluster setup (with Istio Gateway)
 You can run the following command from the host to finalize the cluster setup using Istio Gateway:
 
 Make sure to adjust the CPU architecture in the `Download Istio` task in the `finalization-istio.yml` file. The default is `linux_arm64`, but if needed, you can change it to `linux_amd64`.
