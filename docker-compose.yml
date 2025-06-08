@@ -5,7 +5,7 @@ services:
     ports: []
     environment:
       - PORT=${MODEL_SERVICE_PORT}
-      - PASSWORD_PATH=/secrets/password
+      - PASSWORD_PATH=/run/secrets/password
     volumes:
       - ./models:/model-service/models
     secrets:
