@@ -5,8 +5,11 @@ services:
     ports: []
     environment:
       - PORT=${MODEL_SERVICE_PORT}
+      - PASSWORD_PATH=/secrets/password
     volumes:
       - ./models:/model-service/models
+    secrets:
+      - password
     restart: always
   
   app:
@@ -20,3 +23,7 @@ services:
     depends_on:
       - model-service
     restart: always
+
+secrets:
+  password:
+    file: ./password_secret.txt
