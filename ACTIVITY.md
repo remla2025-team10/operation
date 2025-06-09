@@ -109,6 +109,11 @@
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/31 (A1 + A3)
 <br> Approved PR: https://github.com/remla2025-team10/operation/pull/34, https://github.com/remla2025-team10/operation/pull/33
 
+
+-- Sahar Marossi --
+<br>Created PR: https://github.com/remla2025-team10/model-training/pull/9 (A4)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/31, https://github.com/remla2025-team10/operation/pull/33
+
 -- Koen --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/34 (A3)
 <br> Approved PR: https://github.com/remla2025-team10/operation/pull/31 (A1 + A3)
