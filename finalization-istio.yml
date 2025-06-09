@@ -107,6 +107,16 @@
       become_user: vagrant
       shell: kubectl apply -f /tmp/metallb-native.yaml
 
+
+    - name: Wait for all MetalLB pods to be ready
+      become_user: vagrant
+      shell: |
+        kubectl wait \
+          --for=condition=ready pod \
+          --all \
+          -n metallb-system \
+          --timeout=120s
+
     - name: Add IPAddressPool
       copy:
         dest: /etc/kubernetes/ip-address-pool.yaml
@@ -174,6 +184,14 @@
       environment:
         KUBECONFIG: /home/vagrant/.kube/config
 
+    - name: Wait for all cert-manager pods to be ready
+      become_user: vagrant
+      shell: |
+        kubectl wait \
+          --for=condition=ready pod \
+          --all \
+          -n cert-manager \
+          --timeout=180s
 
     # Apply canary release
     - name: Copy canary file
@@ -185,3 +203,25 @@
     - name: Apply Canary Release
       become_user: vagrant
       shell: kubectl apply -f /tmp/canary-release.yml
+
+
+    - name: Generate Kubernetes Dashboard admin token
+      become: true
+      shell: |
+        kubectl -n kubernetes-dashboard create token admin-user
+      register: dashboard_token
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Save dashboard token to a temp file on the VM
+      become: true
+      copy:
+        content: "{{ dashboard_token.stdout }}"
+        dest: /tmp/k8s_dashboard_admin_token.txt
+        mode: '0600'
+
+    - name: Fetch dashboard token back to the Ansible controller
+      fetch:
+        src: /tmp/k8s_dashboard_admin_token.txt
+        dest: "{{ playbook_dir }}/dashboard-admin-token.txt"
+        flat: yes

@@ -14,6 +14,15 @@
       become_user: vagrant
       shell: kubectl apply -f /tmp/metallb-native.yaml
 
+    - name: Wait for all MetalLB pods to be ready
+      become_user: vagrant
+      shell: |
+        kubectl wait \
+          --for=condition=ready pod \
+          --all \
+          -n metallb-system \
+          --timeout=120s
+
     - name: Add IPAddressPool
       copy:
         dest: /etc/kubernetes/ip-address-pool.yaml
