@@ -15,10 +15,16 @@ ingress:
 
 serviceMonitor:
   enabled: true
+  create: true
   namespace: "default"  
   interval: 15s
   scrapeTimeout: 10s
   additionalLabels:
     release: myprom
+
+prometheusRule:
+  additionalLabels:
+    release: myprom
+
 alertmanager:
   receiverEmail: alerts.remla.team10@gmail.com
