@@ -120,3 +120,7 @@
 -- Maosheng --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/33 (A3)
 <br> Approved PR: https://github.com/remla2025-team10/operation/pull/34 (A3)
+
+-- Haoran --
+<br> Created PR: https://github.com/remla2025-team10/app-service/pull/7 (A5)
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/34, https://github.com/remla2025-team10/operation/pull/33 (A3)
