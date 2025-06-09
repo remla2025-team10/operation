@@ -2,3 +2,4 @@
 admin.conf
 .venv/
 .idea/
+dashboard-admin-token.txt
