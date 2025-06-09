@@ -77,8 +77,20 @@ You can run the following command from the host to finalize the cluster setup us
 
 
 ```bash
-ansible-playbook -u vagrant -i 192.168.56.100, finalization.yml 
+ansible-playbook -u vagrant -i 192.168.56.100, finalization-istio.yml 
 ```
+
+#### Sticky sessions
+After the above steps are complete, you should be able to utilize sticky sessions to determine which app version you are routed to.
+The users not selected for the experiment won't have the `x-user` header set. In this case, due to limitations with the sticky session header configuration, we implement 90/10 routing to v1:
+```bash
+curl http://app.local/
+```
+
+And users selected for the experiment will have `x-user: experiment` routing them to v2 them to v2r set in the request, will always be routed to v2 (weight 100):
+```bash
+curl -H "x-user: experiment" http://app.local/
+``` 
 
 #### Local DNS Resolution
 On your host machine, make sure to add `app.local` and `dashboard.local` in your `/etc/hosts` file:
@@ -207,8 +219,7 @@ cd operation/model-stack
 ```
 Then, install the helm release
 ```
-helm install <release-name> . \
-  --set appService.modelServiceUrl=http://<release-name>-model-service:3000
+helm install <release-name> .
 ```
 
 #### 4. Port forward
@@ -270,6 +281,16 @@ The application is structured in the following way:
         - `templates/servicemonitor.yaml`: ServiceMonitor configurations for Prometheus metrics collection
         - `templates/alertmanager-config.yaml`: AlertManager configuration for notification settings
         - `templates/requests-rule.yaml`: Custom Prometheus alerting rules
+    - `app-ingress/app-ingress.yaml`: Define ingress configurations for application routes.
+    - `kubernetes dashboard`
+        - `dashboard-adminuser.yaml`: Define ServiceAccount and CluterRoleBinding for a KB dashboard admin user.
+        - `ingress-dashboard`: Ingress configuration for exposing the KB dashboard.
+    - `canary-release.yml`: Defines KB resources for canary deployment.
+    - `finalization-istio.yml`: Install istio service mesh and addons (prometheus, jaeger, kiali). 
+    - `rate-limiting.yaml`: Implements rate limiting using EnvoyFilter.
+    - `docs/`
+        - `deployment.md`: Deployment description details.
+        - `extension.md`: Extension proposal.
 - **App Service Repository** holds the relevant frontend and backend code for the application
     - `app/models/model_handler.py` makes a post request to the model-service to get a sentiment prediction
     - `app/routes/__init__.py` defines the routes used by the backend application
@@ -284,9 +305,21 @@ The application is structured in the following way:
     - `src/lib_version/version_awerenes.py` is contains the package code used to retrieve the packages version at runtime.
     - `src/lib_version/VERSION` is the config file that contains the build version. This file is used at build time to determine the versioning.
 - **Model training**
-    - `train.py` is used to train the restaurant sentiment analysis model.
-    - `data/a1_RestaurantReviews_HistoricDump.tsv` is the training data that has been used to train the model.
-    - `model/` contains the trained model files that is ready to use for the model-service.
+    - `data/`: The folder containing all the data files
+        - `raw/`: Original raw data dumps
+        - `processed/`: The processed data directly used by the model
+    - `models/`: Containes the models which have already been trained
+    - `restaurant_model_training/`: The main package (module) of this project
+        - `config.py`: Contains the configurations such as default values and paths
+        - `dataset.py`: Logic for loading and preprocessing the data
+        - `features.py`: Logic for creating BOW features
+        - `modeling/`: Module containing logic for model training (`train.py`) and predicting (`predict.py`)
+    - `tests/`: The test files for the model  
+        - `test_data_features.py`: Tests for data and features
+        - `test_infrastructure.py`: Tests for infrastructure
+        - `test_model_development.py`: Tests for model training, evaluation, robustness
+        - `test_monitoring.py`: Tests for model monitoring
+    - `requirements.txt`: The project dependencies
 
 ## Repository Links
 For convenience, we list links to the available repositories used in this project:
@@ -340,3 +373,18 @@ Prometheus dashboard not configured properly, so the actual prometheus rule does
 
 ### What needs to be done
 Mutamorphic testing.
+
+## Progress Log - Assignment 5
+### What was done
+
+- **Traffic Management** Added istio gateway: Kubernetes dashboard, kiali, prometheus, app are all accessible.
+- **Sticky Sessions** Added sticky sessions for user routing, so users with the correct header are always redirected to the experimental (v2) version of the app, while others never see it (v1)
+- **Continuous Experimentation** Added a new feature: random gifs to the sentiment analysis with a metrics route.
+- **Rate limiting** A (base) Isitio envoyfilter has been implemented that should locally rate limits to 10 requests a minute. For now, must be manually applied with `kubectl` once the app is up.
+- **Documentation** Description and model are provided in `/docs`.
+
+### What is missing / needs improvement
+
+- Documentation is incomplete. Needs `extension.md`.
+- Dashboard access must be configured properly.
+- Rate limiting needs to be hotfixed. 
