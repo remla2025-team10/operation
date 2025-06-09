@@ -103,3 +103,8 @@
 -- Koen Bron --
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/29 (A5)
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/24, https://github.com/remla2025-team10/operation/pull/23 (A5)
+
+# Week 7
+-- Boris --
+<br> Created PR: https://github.com/remla2025-team10/operation/pull/31 (A1 + A3)
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/34, https://github.com/remla2025-team10/operation/pull/33
