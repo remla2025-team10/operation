@@ -219,8 +219,7 @@ cd operation/model-stack
 ```
 Then, install the helm release
 ```
-helm install <release-name> . \
-  --set appService.modelServiceUrl=http://<release-name>-model-service:3000
+helm install <release-name> .
 ```
 
 #### 4. Port forward

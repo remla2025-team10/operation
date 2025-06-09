@@ -1,7 +1,8 @@
 modelService:
   name: model-service
-  image: ghcr.io/remla2025-team10/model-service:v0.0.5
+  image: ghcr.io/remla2025-team10/model-service:latest
   port: 3000
+  pvSize: 3Gi
 
 appService:
   name: app-service

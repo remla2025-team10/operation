@@ -21,13 +21,12 @@ spec:
             - name: PORT
               value: "{{ .Values.modelService.port }}"
           volumeMounts:
-            - name: model-volume
+            - name: {{ .Release.Name }}-model-volume
               mountPath: /model-service/models
       volumes:
-        - name: model-volume
-          hostPath:
-            path: /mnt/shared
-            type: Directory
+        - name: {{ .Release.Name }}-model-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-model-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,4 +52,3 @@ spec:
               value: "{{ .Values.appService.port }}"
             - name: MODEL_SERVICE_URL
               value: "http://{{ .Release.Name }}-{{ .Values.modelService.name }}:{{ .Values.modelService.port }}"
-
