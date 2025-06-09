@@ -52,5 +52,5 @@ spec:
             - name: PORT
               value: "{{ .Values.appService.port }}"
             - name: MODEL_SERVICE_URL
-              value: "{{ .Values.appService.modelServiceUrl }}"
+              value: "http://{{ .Release.Name }}-{{ .Values.modelService.name }}:{{ .Values.modelService.port }}"
 

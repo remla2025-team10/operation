@@ -7,7 +7,6 @@ appService:
   name: app-service
   image: ghcr.io/remla2025-team10/app-service:latest
   port: 8080
-  modelServiceUrl: http://{{ .Release.Name }}-model-service:3000
 
 ingress:
   enabled: true
