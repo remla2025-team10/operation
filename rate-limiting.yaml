@@ -12,35 +12,60 @@ spec:
       match:
         context: GATEWAY # apply to the gateway context
         listener:
-          portNumber: 80
           filterChain:
             filter:
               name: "envoy.filters.network.http_connection_manager"
+              subFilter:
+                name: "envoy.filters.http.router"
       patch:
         operation: INSERT_BEFORE
         value:
           name: envoy.filters.http.local_ratelimit
           typed_config:
-            "@type": type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
-            stat_prefix: http_local_rate_limiter
-            token_bucket:
-              max_tokens: 10
-              tokens_per_fill: 10
-              fill_interval: 60s # 10 tokens per minute
-            filter_enabled:
-              runtime_key: local_rate_limit_enabled # enable/disable rate limiting via runtime key
-              default_value:
-                numerator: 100
-                denominator: HUNDRED
-            filter_enforced:
-              runtime_key: local_rate_limit_enforced # enforce rate limiting via runtime key
-              default_value:
-                numerator: 100
-                denominator: HUNDRED
-            response_headers_to_add:
-              - append: false
-                header:
-                  key: x-local-rate-limit # header to show rate limiting status
-                  value: 'true'
-            status:
-              code: 429 # status code for rate limiting
+            "@type": type.googleapis.com/udpa.type.v1.TypedStruct
+            type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
+            value:
+              stat_prefix: http_local_rate_limiter
+              token_bucket: # rate limit (local): 10 requests per 60s
+                max_tokens: 10
+                tokens_per_fill: 10
+                fill_interval: 60s
+              filter_enabled:
+                runtime_key: local_rate_limit
+                default_value:
+                  numerator: 100
+                  denominator: HUNDRED
+              filter_enforced:
+                runtime_key: local_rate_limit
+                default_value:
+                  numerator: 100
+                  denominator: HUNDRED
+              response_headers_to_add:
+                - append: false
+                  header:
+                    key: x-local-rate-limit
+                    value: 'true'
+---
+# update the service to add rate limiting
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: app-vs  # virtual service from canary-release.yml
+spec:
+  hosts:
+  - "app.local"
+  gateways:
+  - my-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: app
+        subset: v1
+      weight: 90
+    - destination:
+        host: app
+        subset: v2
+      weight: 10
