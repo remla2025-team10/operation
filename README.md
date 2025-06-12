@@ -158,6 +158,28 @@ kubectl -n kubernetes-dashboard create token admin-user
 ```
 Copy the output token and use it to log in to the dashboard.
 
+#### Rate-limiting
+
+With istio installed, you can apply rate-limiting to the app.
+
+First, SSH into the control node:
+```bash
+vagrant ssh ctrl
+```
+
+Then apply the filter: 
+```bash
+kubectl apply -f /vagrant/rate-limiting.yaml
+```
+
+(You can also delete the filter from the control node with ```kubectl delete -f /vagrant/rate-limiting.yaml```)
+
+To test it, go to your main terminal and try the following script.
+```bash
+for i in {1..20}; do   curl -I -H "Host: app.local" http://192.168.56.90/;   sleep 1; done
+```
+ After ten `200 OK` requests, you will receive `429` status codes.
+
 
 ### System Requirements
 
