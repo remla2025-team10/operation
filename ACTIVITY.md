@@ -8,7 +8,7 @@
 <br>Approved PR: https://github.com/remla2025-team10/model-service/pull/2, https://github.com/remla2025-team10/lib-ml/pull/2 (A1)
 
 -- Sahar Marossi --
-<br>Created PR: https://github.com/remla2025-team10/lib-ml/pull/1 (A1)
+<br>Created PR: https://github.com/remla2025-team10/lib-ml/pull/2 (A1)
 <br>Approved PR: https://github.com/remla2025-team10/model-training/pull/2, https://github.com/remla2025-team10/model-service/pull/2, https://github.com/remla2025-team10/lib-version/pull/1, https://github.com/remla2025-team10/operation/pull/1 (A1)
 
 -- Maosheng Jiang --
@@ -111,7 +111,7 @@
 
 -- Sahar Marossi --
 <br>Created PR: https://github.com/remla2025-team10/model-training/pull/9 (A4)
-<br>Approved PR: https://github.com/remla2025-team10/operation/pull/31, https://github.com/remla2025-team10/operation/pull/33
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/31, https://github.com/remla2025-team10/operation/pull/33 (A1 + A3)
 
 -- Koen --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/34 (A3)
