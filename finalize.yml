@@ -1,3 +1,4 @@
+---
 - name: Finalizing Cluster Setup
   hosts: all
   become: true
@@ -10,102 +11,7 @@
       aarch64: arm64
       s390x: s390x
       ppc64le: ppc64le
-
   tasks:
-    ########## Install Istio ##########
-    - name: Ensure curl is installed
-      apt:
-        name: curl
-        state: present
-        update_cache: yes
-
-    - name: Create Istio install directory
-      file:
-        path: "{{ istio_install_dir }}"
-        state: directory
-        owner: root
-        group: root
-        mode: '0755'
-
-    - name: Determine Istio archive architecture
-      set_fact:
-        istio_arch: "{{ istio_arch_map[ansible_architecture] | default(ansible_architecture) }}"
-
-    - name: Download Istio
-      get_url:
-        url: "https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux-{{istio_arch}}.tar.gz"
-        dest: "/tmp/istio-{{ istio_version }}.tar.gz"
-        mode: '0644'
-
-
-    - name: Extract Istio archive
-      unarchive:
-        src: "/tmp/istio-{{ istio_version }}.tar.gz"
-        dest: "{{ istio_install_dir }}"
-        remote_src: yes
-
-    - name: Move istioctl to /usr/local/bin
-      copy:
-        src: "{{ istio_install_dir }}/istio-{{ istio_version }}/bin/istioctl"
-        dest: /usr/local/bin/istioctl
-        mode: '0755'
-        remote_src: yes
-
-    - name: Verify istioctl version
-      command: istioctl version
-      register: istioctl_output
-      changed_when: false
-
-    - name: Print istioctl version
-      debug:
-        var: istioctl_output.stdout
-
-    - name: Install Istio with default profile
-      command: istioctl install --set profile=default -y
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
-
-    - name: Wait for istio-system pods to be ready
-      shell: |
-        kubectl wait --for=condition=ready pod -l app=istiod -n istio-system --timeout=180s
-        kubectl wait --for=condition=ready pod -l istio=ingressgateway -n istio-system --timeout=180s
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
-
-    - name: Label default namespace for automatic sidecar injection
-      command: kubectl label namespace default istio-injection=enabled --overwrite
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
-    - name: Label kubernetes-dashboard namespace for automatic sidecar injection
-      command: kubectl label namespace default istio-injection=enabled --overwrite
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
-
-
-    - name: Deploy Prometheus addon
-      command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/prometheus.yaml
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
-
-    - name: Deploy Jaeger addon
-      command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/jaeger.yaml
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
-
-    - name: Deploy Kiali addon
-      command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/kiali.yaml
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
-
-    - name: Wait for addons to be ready
-      shell: |
-        kubectl wait --for=condition=ready pod -l app=prometheus -n istio-system --timeout=120s
-        kubectl wait --for=condition=ready pod -l app=jaeger -n istio-system --timeout=120s
-        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kiali -n istio-system --timeout=120s
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
-
-
     ########## Install MetalLB ##########
     - name: Copy MetalLB to VM
       copy:
@@ -116,7 +22,6 @@
     - name: Install MetalLB
       become_user: vagrant
       shell: kubectl apply -f /tmp/metallb-native.yaml
-
 
     - name: Wait for all MetalLB pods to be ready
       become_user: vagrant
@@ -165,6 +70,153 @@
       shell: |
         kubectl wait -n metallb-system -l app=metallb,component=controller --for=condition=ready pod --timeout=60s
 
+    ######### Install Nginx Ingress ##########
+    - name: Add Helm repository
+      become_user: vagrant
+      shell: |
+        helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+    - name: Install Nginx Ingress Controller
+      become_user: vagrant
+      kubernetes.core.helm:
+        name: nginx-ingress
+        chart_ref: ingress-nginx/ingress-nginx
+        release_namespace: ingress-nginx
+        create_namespace: true
+        values:
+          controller:
+            service:
+              loadBalancerIP: 192.168.56.90
+
+    - name: Wait for all Ingress Controller pods to be Ready
+      become_user: vagrant
+      shell: |
+        kubectl wait \
+          --namespace ingress-nginx \
+          --for=condition=ready pod \
+          --all \
+          --timeout=120s
+
+    ########## Install Istio ##########
+    - name: Ensure curl is installed
+      apt:
+        name: curl
+        state: present
+        update_cache: yes
+
+    - name: Create Istio install directory
+      file:
+        path: "{{ istio_install_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Determine Istio archive architecture
+      set_fact:
+        istio_arch: "{{ istio_arch_map[ansible_architecture] | default(ansible_architecture) }}"
+
+    - name: Download Istio
+      get_url:
+        url: "https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux-{{istio_arch}}.tar.gz"
+        dest: "/tmp/istio-{{ istio_version }}.tar.gz"
+        mode: '0644'
+
+
+    - name: Extract Istio archive
+      unarchive:
+        src: "/tmp/istio-{{ istio_version }}.tar.gz"
+        dest: "{{ istio_install_dir }}"
+        remote_src: yes
+
+    - name: Move istioctl to /usr/local/bin
+      copy:
+        src: "{{ istio_install_dir }}/istio-{{ istio_version }}/bin/istioctl"
+        dest: /usr/local/bin/istioctl
+        mode: '0755'
+        remote_src: yes
+
+    - name: Verify istioctl version
+      command: istioctl version
+      register: istioctl_output
+      changed_when: false
+
+    - name: Print istioctl version
+      debug:
+        var: istioctl_output.stdout
+
+    - name: Render IstioOperator for static ingress IP
+      copy:
+        dest: /tmp/istio-operator-static-ip.yaml
+        content: |
+          apiVersion: install.istio.io/v1alpha1
+          kind: IstioOperator
+          metadata:
+            namespace: istio-system
+            name: istio-controlplane
+          spec:
+            profile: default
+            components:
+              ingressGateways:
+                - name: istio-ingressgateway
+                  enabled: true
+                  k8s:
+                    service:
+                      type: LoadBalancer
+                      loadBalancerIP: 192.168.56.91
+
+    - name: Install Istio via IstioOperator
+      command: |
+        istioctl install -f /tmp/istio-operator-static-ip.yaml -y
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+#    - name: Install Istio with default profile
+#      command: istioctl install --set profile=default -y
+#      environment:
+#        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Wait for istio-system pods to be ready
+      shell: |
+        kubectl wait --for=condition=ready pod -l app=istiod -n istio-system --timeout=180s
+        kubectl wait --for=condition=ready pod -l istio=ingressgateway -n istio-system --timeout=180s
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Label default namespace for automatic sidecar injection
+      command: kubectl label namespace default istio-injection=enabled --overwrite
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+    - name: Label kubernetes-dashboard namespace for automatic sidecar injection
+      command: kubectl label namespace default istio-injection=enabled --overwrite
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+
+    - name: Deploy Prometheus addon
+      command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/prometheus.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Deploy Jaeger addon
+      command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/jaeger.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Deploy Kiali addon
+      command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/kiali.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Wait for addons to be ready
+      shell: |
+        kubectl wait --for=condition=ready pod -l app=prometheus -n istio-system --timeout=120s
+        kubectl wait --for=condition=ready pod -l app=jaeger -n istio-system --timeout=120s
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kiali -n istio-system --timeout=120s
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    ####### Install Kubernetes Dashboard #######
     - name: Add Kubernetes Dashboard repository
       become_user: vagrant
       shell: |
@@ -187,8 +239,40 @@
       become_user: vagrant
       shell: kubectl apply -f /tmp/dashboard-adminuser.yaml
 
+    #### Use NGINX Ingress for the dashboard ####
+    - name: Copy Ingress Dashboard to VM
+      copy:
+        src: kubernetes-dashboard/ingress-dashboard.yaml
+        dest: /tmp/ingress-dashboard.yaml
+        mode: '0644'
 
-    # Install Cert-Manager
+    - name: Apply Ingress Dashboard
+      become_user: vagrant
+      shell: kubectl apply -f /tmp/ingress-dashboard.yaml
+
+#    - name: Copy Ingress App to VM
+#      copy:
+#        src: app-ingress/app-ingress.yaml
+#        dest: /tmp/app-ingress.yaml
+#        mode: '0644'
+#
+#    - name: Apply Ingress App
+#      become_user: vagrant
+#      shell: kubectl apply -f /tmp/app-ingress.yaml
+
+# UNCOMMENT this task if you want the normal deployment!
+#    - name: Deploy services
+#      copy:
+#        src: deployment.yaml
+#        dest: /tmp/deployment.yaml
+#        mode: '0644'
+#
+#    - name: Apply Deployment
+#      become_user: vagrant
+#      shell: kubectl apply -f /tmp/deployment.yaml
+
+
+    ######### Install Cert-Manager ##########
     - name: Install cert-manager with kubeconfig
       command: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
       environment:
@@ -213,7 +297,6 @@
     - name: Apply Canary Release
       become_user: vagrant
       shell: kubectl apply -f /tmp/canary-release.yml
-
 
     - name: Generate Kubernetes Dashboard admin token
       become: true
