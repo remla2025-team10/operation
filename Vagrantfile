@@ -4,6 +4,8 @@ WORKER_COUNT = ENV['WORKER_COUNT'] ? ENV['WORKER_COUNT'].to_i : 1
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-24.04"
 
+  config.vm.synced_folder "./shared", "/mnt/shared", type: "virtualbox"
+
   # Common provision for all nodes
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "ansible/general.yaml"
