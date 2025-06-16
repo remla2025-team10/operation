@@ -101,7 +101,7 @@ sudo nano /etc/hosts
 
 Add the following line at the end:
 ```bash
-192.168.56.90  app.local dashboard.local
+192.168.56.90  app.local dashboard.local grafana.local
 ```
 
 Save and exit (`Ctrl + O`, then `Enter`, then `Ctrl + X`)
@@ -112,7 +112,7 @@ Finally, flush the DNS cache:
 sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 ```
 
-When everything is complete, the Kubernetes Dashboard should be accessible at [dashboard.local](dashboard.local) and our app should be accessible at [app.local](app.local).
+When everything is complete, the Kubernetes Dashboard should be accessible at [dashboard.local](dashboard.local), Grafana Dashboard at [grafana.local](grafana.local), and our app should be accessible at [app.local](app.local).
 
 To log in, generate an admin token by running this command on the control node:
 ```bash
@@ -144,10 +144,18 @@ Add the following line at the end:
 
 Save and exit (`Ctrl + O`, then `Enter`, then `Ctrl + X`)
 
-Finally, flush the DNS cache:
+Finally, flush the DNS cache.
+
+For macOS, run:
 
 ```bash
 sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+```
+
+For Linux, run:
+
+```bash
+sudo systemd-resolve --flush-caches
 ```
 
 When everything is complete, the Kubernetes Dashboard should be accessible at [https://dashboard.example.com](https://dashboard.example.com), our app should be accessible at [app.local](app.local), the kiali dashboard should be accessible at [kiali.local](kiali.local) and the prometheus dashboard should be accessible at [prometheus.local](prometheus.local).
