@@ -1,4 +1,4 @@
-![Deployment Architecture Diagram](REMLA10_diagram.png)
+![Deployment Architecture Diagram](REMLA10_Diagram.png)
 
 # Deployment Structure
 In this document we outline the architecture of this project and its deployment. We elaborate on the flow and configuration behind the setup to make it easier to understand the project on a high-level.

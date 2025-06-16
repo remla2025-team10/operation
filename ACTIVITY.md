@@ -93,7 +93,7 @@
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/23 (A5)
 
 -- Sahar Marossi --
-<br>Created PR: https://github.com/remla2025-team10/operation/pull/23 (A5)
+<br>Created PR: https://github.com/remla2025-team10/operation/pull/23 (A5), https://github.com/remla2025-team10/operation/pull/30 (A5)
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/24, https://github.com/remla2025-team10/operation/pull/29 (A5)
 
 -- Maosheng Jiang --
@@ -110,7 +110,7 @@
 <br> Approved PR: https://github.com/remla2025-team10/operation/pull/34, https://github.com/remla2025-team10/operation/pull/33
 
 -- Sahar Marossi --
-<br>Created PR: https://github.com/remla2025-team10/model-training/pull/9 (A4)
+<br>Created PR: https://github.com/remla2025-team10/model-training/pull/9 (A4), https://github.com/remla2025-team10/operation/pull/30 (A5)
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/31, https://github.com/remla2025-team10/operation/pull/33 (A1 + A3)
 
 -- Koen --
@@ -124,3 +124,24 @@
 -- Haoran --
 <br> Created PR: https://github.com/remla2025-team10/app-service/pull/7 (A5)
 <br> Approved PR: https://github.com/remla2025-team10/operation/pull/34, https://github.com/remla2025-team10/operation/pull/33 (A3)
+
+# Week 8
+-- Boris --
+<br> Created PR: https://github.com/remla2025-team10/model-training/pull/11 (A4)
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/39 (A5)
+
+-- Sahar Marossi --
+<br>Created PR: https://github.com/remla2025-team10/operation/pull/36 (A5)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/38 (A5), https://github.com/remla2025-team10/model-training/pull/11 (A4)
+
+-- Koen --
+<br> Created PR: 
+<br> Approved PR: 
+
+-- Maosheng --
+<br> Created PR: https://github.com/remla2025-team10/operation/pull/38 (A5)
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/36 (A5)
+
+-- Haoran --
+<br> Created PR: https://github.com/remla2025-team10/operation/pull/39 (A5)
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/38 (A5)
