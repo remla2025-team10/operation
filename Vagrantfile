@@ -8,8 +8,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "ansible/general.yaml"
     ansible.compatibility_mode = "2.0"
-    ansible.inventory_path = "inventory.cfg" 
-    ansible.limit = "all" 
     ansible.extra_vars = {
       worker_count: WORKER_COUNT
     }
@@ -23,7 +21,6 @@ Vagrant.configure("2") do |config|
     # Control node basic setup
     ctrl.vm.provider "virtualbox" do |vb|
       # VM memory settings
-#       vb.memory = 4096
       vb.memory = 2048
       vb.cpus = 2
       vb.name = "k8s-controller"
@@ -36,8 +33,6 @@ Vagrant.configure("2") do |config|
     ctrl.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/ctrl.yaml"
         ansible.compatibility_mode = "2.0"
-        ansible.inventory_path = "inventory.cfg"
-        ansible.limit = "all"
     end
   end
 
@@ -50,7 +45,6 @@ Vagrant.configure("2") do |config|
       # Worker node basic setup
       node.vm.provider "virtualbox" do |vb|
         # VM memory settings
-        # vb.memory = 6144
         vb.memory = 4096
         vb.cpus = 4
         vb.name = "k8s-worker-#{i}"
@@ -63,8 +57,26 @@ Vagrant.configure("2") do |config|
       node.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/node.yaml"
         ansible.compatibility_mode = "2.0"
-        ansible.inventory_path = "inventory.cfg"
-        ansible.limit = "all"
+      end
+    end
+
+  # Generate ansible inventory after all VMs are up
+  config.trigger.after :up do |trigger|
+    trigger.name = "Generate ansible inventory config file"
+    trigger.ruby do
+      File.open('inventory.cfg', 'w') do |f|
+
+        # active controller node
+        f.puts "[ctrl]"
+        controller = active_nodes.find { |node| node[0] == "ctrl" }
+        f.puts "#{controller[0]} ansible_host=#{controller[1]}" if controller
+
+        # active worker nodes (loop through each one)
+        f.puts "\n[nodes]"
+        workers = active_nodes.select { |node| node[0].start_with?("node-") }
+        workers.each do |worker|
+          f.puts "#{worker[0]} ansible_host=#{worker[1]}"
+        end
       end
     end
   end
