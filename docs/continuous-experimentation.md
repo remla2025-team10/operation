@@ -35,8 +35,6 @@ We use the Istio service mesh for traffic management, implementing traffic distr
 - Requests with the `x-user: experiment` header (10% of traffic) are routed to version B (experimental version)
 - The remaining requests (90% of traffic) are routed to version A (base version)
 
-This setup uses Istio's sticky session feature to ensure that the same user is always routed to the same version, thereby avoiding inconsistent user experiences.
-
 ### Technical Implementation
 
 Traffic distribution is implemented through the following Kubernetes/Istio configuration:
