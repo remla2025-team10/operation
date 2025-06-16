@@ -143,5 +143,5 @@
 <br> Approved PR: https://github.com/remla2025-team10/operation/pull/36 (A5)
 
 -- Haoran --
-<br> Created PR: https://github.com/remla2025-team10/operation/pull/39 (A5)
+<br> Created PR: https://github.com/remla2025-team10/operation/pull/39 https://github.com/remla2025-team10/app-service/pull/13 (A5) 
 <br> Approved PR: https://github.com/remla2025-team10/operation/pull/38 (A5)
