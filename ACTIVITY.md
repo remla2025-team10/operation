@@ -128,15 +128,15 @@
 # Week 8
 -- Boris --
 <br> Created PR: https://github.com/remla2025-team10/model-training/pull/11 (A4)
-<br> Approved PR: https://github.com/remla2025-team10/operation/pull/39 (A5)
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/38 (A5), https://github.com/remla2025-team10/operation/pull/39 (A5)
 
 -- Sahar Marossi --
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/36 (A5)
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/38 (A5), https://github.com/remla2025-team10/model-training/pull/11 (A4)
 
 -- Koen --
-<br> Created PR: 
-<br> Approved PR: 
+<br> Created PR:
+<br> Approved PR:
 
 -- Maosheng --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/38 (A5)
