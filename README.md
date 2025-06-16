@@ -101,7 +101,7 @@ sudo nano /etc/hosts
 
 Add the following line at the end:
 ```bash
-192.168.56.90  app.local dashboard.local grafana.local
+192.168.56.90  app.local dashboard.local
 ```
 
 Save and exit (`Ctrl + O`, then `Enter`, then `Ctrl + X`)
@@ -112,7 +112,7 @@ Finally, flush the DNS cache:
 sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 ```
 
-When everything is complete, the Kubernetes Dashboard should be accessible at [dashboard.local](dashboard.local), Grafana Dashboard at [grafana.local](grafana.local), and our app should be accessible at [app.local](app.local).
+When everything is complete, the Kubernetes Dashboard should be accessible at [dashboard.local](dashboard.local) and our app should be accessible at [app.local](app.local).
 
 To log in, generate an admin token by running this command on the control node:
 ```bash
@@ -131,7 +131,7 @@ ansible-playbook -u vagrant -i 192.168.56.100, finalization-istio.yml
 ```
 
 #### Local DNS Resolution
-On your host machine, make sure to add `app.local`, `kiali.local`, `prometheus.local` and `dashboard.example.com` in your `/etc/hosts` file:
+On your host machine, make sure to add `app.local`, `kiali.local`, `prometheus.local`, `grafana.local` and `dashboard.example.com` in your `/etc/hosts` file:
 
 ```bash
 sudo nano /etc/hosts
@@ -139,7 +139,7 @@ sudo nano /etc/hosts
 
 Add the following line at the end:
 ```bash
-192.168.56.90  app.local kiali.local prometheus.local dashboard.example.com
+192.168.56.90  app.local kiali.local prometheus.local grafana.local dashboard.example.com 
 ```
 
 Save and exit (`Ctrl + O`, then `Enter`, then `Ctrl + X`)
@@ -158,7 +158,7 @@ For Linux, run:
 sudo systemd-resolve --flush-caches
 ```
 
-When everything is complete, the Kubernetes Dashboard should be accessible at [https://dashboard.example.com](https://dashboard.example.com), our app should be accessible at [app.local](app.local), the kiali dashboard should be accessible at [kiali.local](kiali.local) and the prometheus dashboard should be accessible at [prometheus.local](prometheus.local).
+When everything is complete, the Kubernetes Dashboard should be accessible at [https://dashboard.example.com](https://dashboard.example.com), our app should be accessible at [app.local](app.local), the kiali dashboard should be accessible at [kiali.local](kiali.local), the grafana dashboard should be accessible at [grafana.local](grafana.local) and the prometheus dashboard should be accessible at [prometheus.local](prometheus.local).
 
 To log in, generate an admin token by running this command on the control node:
 ```bash
