@@ -27,15 +27,6 @@
         group: root
         mode: '0755'
 
-<<<<<<< finalize-kubernetes
-    - name: Determine Istio archive architecture
-      set_fact:
-        istio_arch: "{{ istio_arch_map[ansible_architecture] | default(ansible_architecture) }}"
-
-    - name: Download Istio
-      get_url:
-        url: "https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux-{{istio_arch}}.tar.gz"
-=======
     - name: Set architecture fact
       set_fact:
         istio_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
@@ -43,7 +34,6 @@
     - name: Download Istio
       get_url:
         url: "https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux-{{ istio_arch }}.tar.gz"
->>>>>>> main
         dest: "/tmp/istio-{{ istio_version }}.tar.gz"
         mode: '0644'
 
