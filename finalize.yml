@@ -239,17 +239,6 @@
       become_user: vagrant
       shell: kubectl apply -f /tmp/dashboard-adminuser.yaml
 
-    #### Use NGINX Ingress for the dashboard ####
-    - name: Copy Ingress Dashboard to VM
-      copy:
-        src: kubernetes-dashboard/ingress-dashboard.yaml
-        dest: /tmp/ingress-dashboard.yaml
-        mode: '0644'
-
-    - name: Apply Ingress Dashboard
-      become_user: vagrant
-      shell: kubectl apply -f /tmp/ingress-dashboard.yaml
-
 #    - name: Copy Ingress App to VM
 #      copy:
 #        src: app-ingress/app-ingress.yaml
@@ -286,6 +275,17 @@
           --all \
           -n cert-manager \
           --timeout=180s
+
+    #### Use NGINX Ingress for the dashboard ####
+    - name: Copy Ingress Dashboard to VM
+      copy:
+        src: kubernetes-dashboard/ingress-dashboard.yaml
+        dest: /tmp/ingress-dashboard.yaml
+        mode: '0644'
+
+    - name: Apply Ingress Dashboard
+      become_user: vagrant
+      shell: kubectl apply -f /tmp/ingress-dashboard.yaml
 
     # Apply canary release
     - name: Copy canary file
