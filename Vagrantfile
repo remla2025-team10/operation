@@ -8,6 +8,8 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "ansible/general.yaml"
     ansible.compatibility_mode = "2.0"
+    ansible.inventory_path = "inventory.cfg" 
+    ansible.limit = "all" 
     ansible.extra_vars = {
       worker_count: WORKER_COUNT
     }
@@ -34,6 +36,8 @@ Vagrant.configure("2") do |config|
     ctrl.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/ctrl.yaml"
         ansible.compatibility_mode = "2.0"
+        ansible.inventory_path = "inventory.cfg"
+        ansible.limit = "all"
     end
   end
 
@@ -59,6 +63,8 @@ Vagrant.configure("2") do |config|
       node.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/node.yaml"
         ansible.compatibility_mode = "2.0"
+        ansible.inventory_path = "inventory.cfg"
+        ansible.limit = "all"
       end
     end
   end
