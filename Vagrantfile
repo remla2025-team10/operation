@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
         ansible.compatibility_mode = "2.0"
       end
     end
-
+  end
   # Generate ansible inventory after all VMs are up
   config.trigger.after :up do |trigger|
     trigger.name = "Generate ansible inventory config file"
@@ -68,14 +68,12 @@ Vagrant.configure("2") do |config|
 
         # active controller node
         f.puts "[ctrl]"
-        controller = active_nodes.find { |node| node[0] == "ctrl" }
-        f.puts "#{controller[0]} ansible_host=#{controller[1]}" if controller
+        f.puts "ctrl=92.168.56.100"
 
         # active worker nodes (loop through each one)
         f.puts "\n[nodes]"
-        workers = active_nodes.select { |node| node[0].start_with?("node-") }
-        workers.each do |worker|
-          f.puts "#{worker[0]} ansible_host=#{worker[1]}"
+        (1..WORKER_COUNT).each do |i|
+          f.puts "node-#{i}=192.168.56.#{i + 100}"
         end
       end
     end
