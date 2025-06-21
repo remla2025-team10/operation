@@ -30,9 +30,9 @@ You can either change these manually, or when running `docker-compose up` like s
 ## Kubernetes Cluster Setup
 
 This repository includes configuration for deploying a Kubernetes cluster using Vagrant and Ansible. The setup consists of:
-- 1 control node 
+- 1 control node
     - named `ctrl`, runs on `192.168.56.100`
-- 2 worker nodes by default 
+- 2 worker nodes by default
     - configurable, named `node-1` and `node-2`, run on `192.168.56.101` and `192.168.56.102`
 
 The cluster uses Flannel for pod networking and includes Helm for package management.
@@ -78,20 +78,15 @@ You can run the following command from the host to finalize the cluster setup:
 
 
 ```bash
-ansible-playbook -u vagrant -i 192.168.56.100, finalize.yml 
+ansible-playbook -u vagrant -i 192.168.56.100, finalize.yml
 ```
 
 #### Sticky sessions
-After the above steps are complete, you should be able to utilize sticky sessions to determine which app version you are routed to.
-The users not selected for the experiment won't have the `x-user` header set. In this case, due to limitations with the sticky session header configuration, we implement 90/10 routing to v1:
-```bash
-curl http://app.local/
-```
+After the above steps are complete, sticky sessions should be configured meaning that each subsequent request to `app.local` will lead to the same version.
+Sticky sessions were configured to work only when the initial request contains the `x-user` header, in which case upon the initial 90/10 routing is determined, a cookie is set, indicating the version that user should be routed to. In that case, all subsequent requests will check for the respective cookie header and always route to that version.
 
-And users selected for the experiment will have `x-user: experiment` set in the request, and they will always be routed to v2 (weight 100):
-```bash
-curl -H "x-user: experiment" http://app.local/
-``` 
+If no `x-user` header is present, the requests won't be sticky and will always be 90/10 on subsequent requests.
+You can best test this via Postman, as if you set the header `x-user` and make the request, you should see the cookies contain the app version afterwards, and reruning the request will always lead you to the same version of the app.
 
 #### Local DNS Resolution
 On your host machine, make sure to add `app.local`, `dashboard.local`, `kiali.local`, and `prometheus.local` in your `/etc/hosts` file:
@@ -131,7 +126,7 @@ First, SSH into the control node:
 vagrant ssh ctrl
 ```
 
-Then apply the filter: 
+Then apply the filter:
 ```bash
 kubectl apply -f /vagrant/rate-limiting.yaml
 ```
@@ -149,7 +144,7 @@ for i in {1..20}; do   curl -I -H "Host: app.local" http://192.168.56.90/;   sle
 
 The Kubernetes cluster requires:
 - The default RAM requirement is 4GB for the control node and 6 GB for each worker node.
-- The default CPU requirement is 2 CPUs for each node. 
+- The default CPU requirement is 2 CPUs for each node.
 - You can change these in the `Vagrantfile`.
 
 ## Model stack Helm chart deployment
@@ -210,7 +205,7 @@ helm install <release-name> .
 
 #### 4. Port forward
 
-Run the following to port forward the app service: 
+Run the following to port forward the app service:
 ```
 kubectl port-forward svc/<release-name>-app-service 8080:8080
 ```
@@ -239,7 +234,7 @@ To configure alerts to your email, you first need to create a secret for the sen
 kubectl create secret generic smtp-password-secret \
   --from-literal=smtp_password='lmyl nlxo hjdc hpzn' \
   -n default
-``` 
+```
 
 To set your own gmail address as the target to receive the alerts, you can do:
 
@@ -272,7 +267,7 @@ The application is structured in the following way:
         - `dashboard-adminuser.yaml`: Define ServiceAccount and CluterRoleBinding for a KB dashboard admin user.
         - `ingress-dashboard`: Ingress configuration for exposing the KB dashboard.
     - `canary-release.yml`: Defines KB resources for canary deployment.
-    - `finalization-istio.yml`: Install istio service mesh and addons (prometheus, jaeger, kiali). 
+    - `finalization-istio.yml`: Install istio service mesh and addons (prometheus, jaeger, kiali).
     - `rate-limiting.yaml`: Implements rate limiting using EnvoyFilter.
     - `docs/`
         - `deployment.md`: Deployment description details.
@@ -300,7 +295,7 @@ The application is structured in the following way:
         - `dataset.py`: Logic for loading and preprocessing the data
         - `features.py`: Logic for creating BOW features
         - `modeling/`: Module containing logic for model training (`train.py`) and predicting (`predict.py`)
-    - `tests/`: The test files for the model  
+    - `tests/`: The test files for the model
         - `test_data_features.py`: Tests for data and features
         - `test_infrastructure.py`: Tests for infrastructure
         - `test_model_development.py`: Tests for model training, evaluation, robustness
@@ -319,13 +314,13 @@ For convenience, we list links to the available repositories used in this projec
 ## Progress Log
 ### Assignment 1
 #### What was done
-All core components of the assignment have been implemented. 
+All core components of the assignment have been implemented.
 
-- **Lib-ml** provides a preprocessing library for cleaning up the dataset text to be used in the sentiment analysis. 
+- **Lib-ml** provides a preprocessing library for cleaning up the dataset text to be used in the sentiment analysis.
 - **Model-training** Trains the restaurant sentiment analysis model and publishes it to releases for access.
 - **Model-service** applies preprocessing and uses the model to return a prediction.
 - **Lib-version** provides a simple library that can produce its build version upon request.
-- **App-service** Build the frontend and backend for the project, call model-service api, and use lib-version util. 
+- **App-service** Build the frontend and backend for the project, call model-service api, and use lib-version util.
 - **Operation** builds up the containers for the model-service and app-service and hides model-service from the host (only accessible by app-service).
 
 #### What is missing / needs improvement
@@ -333,7 +328,7 @@ All core components of the assignment have been implemented.
 
 ### Assignment 2
 #### What was done
-All core components of the assignment have been implemented. 
+All core components of the assignment have been implemented.
 
 - **1.1 Basic VM Setup** Configured VMs and networking for Kubernetes. See `general.yaml`.
 - **1.2 Setting up the Kubernetes Controller** Initialized the cluster and set up kubectl, Flannel, and Helm on the controller node. See `ctrl.yaml`.
@@ -373,4 +368,4 @@ Mutamorphic testing.
 
 - Documentation is incomplete. Needs `extension.md`.
 - Dashboard access must be configured properly.
-- Rate limiting needs to be hotfixed. 
+- Rate limiting needs to be hotfixed.
