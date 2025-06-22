@@ -77,7 +77,7 @@ metadata:
 spec:
   containers:
   - name: app
-    image: ghcr.io/remla2025-team10/app-service:v0.7.0   # Newer canary image version
+    image: ghcr.io/remla2025-team10/app-service:beta   # Newer canary image version
     ports:
     - containerPort: 8080
     env:
