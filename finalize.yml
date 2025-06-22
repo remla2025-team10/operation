@@ -12,6 +12,29 @@
       s390x: s390x
       ppc64le: ppc64le
   tasks:
+
+    ########## Install Prometheus (kube-prometheus-stack) ##########
+    - name: Add Prometheus Community Helm repository
+      become_user: vagrant
+      shell: |
+        helm repo add prom-repo https://prometheus-community.github.io/helm-charts
+      args:
+        creates: "{{ ansible_env.HOME }}/.cache/helm/repository/prom-repo-index.yaml"
+
+    - name: Update all Helm repositories
+      become_user: vagrant
+      shell: helm repo update
+
+    - name: Install kube-prometheus-stack via Helm
+      become_user: vagrant
+      kubernetes.core.helm:
+        name: myprom
+        chart_ref: prom-repo/kube-prometheus-stack
+        release_namespace: monitoring
+        create_namespace: true
+        values: {}          # override any upstream defaults here
+
+
     ########## Install MetalLB ##########
     - name: Copy MetalLB to VM
       copy:
@@ -245,6 +268,7 @@
       become_user: vagrant
       shell: kubectl apply -f /tmp/dashboard-adminuser.yaml
 
+# App NGINX Ingress
 #    - name: Copy Ingress App to VM
 #      copy:
 #        src: app-ingress/app-ingress.yaml
@@ -255,7 +279,7 @@
 #      become_user: vagrant
 #      shell: kubectl apply -f /tmp/app-ingress.yaml
 
-# UNCOMMENT this task if you want the normal deployment!
+# UNCOMMENT this task if you want deployment with minikube.
 #    - name: Deploy services
 #      copy:
 #        src: deployment.yaml
@@ -293,16 +317,19 @@
       become_user: vagrant
       shell: kubectl apply -f /tmp/ingress-dashboard.yaml
 
-    # Apply canary release
-    - name: Copy canary file
-      copy:
-        src: canary-release.yml
-        dest: /tmp/canary-release.yml
-        mode: '0644'
+    # Apply canary release.
+    # It is commented out because we want to install it via helm charts.
+    # For bare metal installation, you can uncomment and use this instead.
 
-    - name: Apply Canary Release
-      become_user: vagrant
-      shell: kubectl apply -f /tmp/canary-release.yml
+#    - name: Copy canary file
+#      copy:
+#        src: canary-release.yml
+#        dest: /tmp/canary-release.yml
+#        mode: '0644'
+#
+#    - name: Apply Canary Release
+#      become_user: vagrant
+#      shell: kubectl apply -f /tmp/canary-release.yml
 
     - name: Generate Kubernetes Dashboard admin token
       become: true

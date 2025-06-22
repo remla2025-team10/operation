@@ -1,0 +1,30 @@
+{{- $ms := .Values.modelService -}}
+{{- $as := .Values.appService -}}
+
+---
+# Service for model-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ $ms.name }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-{{ $ms.name }}
+  ports:
+    - name: http
+      port: {{ $ms.port }}
+      targetPort: {{ $ms.port }}
+
+---
+# Service for app-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ $as.name }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-{{ $as.name }}
+  ports:
+    - name: http
+      port: 1234
+      targetPort: {{ $as.port }}
