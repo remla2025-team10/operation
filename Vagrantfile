@@ -4,6 +4,8 @@ WORKER_COUNT = ENV['WORKER_COUNT'] ? ENV['WORKER_COUNT'].to_i : 1
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-24.04"
 
+  config.vm.synced_folder "./shared", "/mnt/shared", type: "virtualbox"
+
   # Common provision for all nodes
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "ansible/general.yaml"
@@ -21,7 +23,6 @@ Vagrant.configure("2") do |config|
     # Control node basic setup
     ctrl.vm.provider "virtualbox" do |vb|
       # VM memory settings
-#       vb.memory = 4096
       vb.memory = 2048
       vb.cpus = 2
       vb.name = "k8s-controller"
@@ -46,7 +47,6 @@ Vagrant.configure("2") do |config|
       # Worker node basic setup
       node.vm.provider "virtualbox" do |vb|
         # VM memory settings
-        # vb.memory = 6144
         vb.memory = 4096
         vb.cpus = 4
         vb.name = "k8s-worker-#{i}"
@@ -59,6 +59,24 @@ Vagrant.configure("2") do |config|
       node.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/node.yaml"
         ansible.compatibility_mode = "2.0"
+      end
+    end
+  end
+  # Generate ansible inventory after all VMs are up
+  config.trigger.after :up do |trigger|
+    trigger.name = "Generate ansible inventory config file"
+    trigger.ruby do
+      File.open('inventory.cfg', 'w') do |f|
+
+        # active controller node
+        f.puts "[ctrl]"
+        f.puts "ctrl=92.168.56.100"
+
+        # active worker nodes (loop through each one)
+        f.puts "\n[nodes]"
+        (1..WORKER_COUNT).each do |i|
+          f.puts "node-#{i}=192.168.56.#{i + 100}"
+        end
       end
     end
   end
