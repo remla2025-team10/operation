@@ -1,6 +1,6 @@
 modelService:
   name: model-service
-  image: ghcr.io/remla2025-team10/model-service:v0.1.3
+  image: ghcr.io/remla2025-team10/model-service:latest
   port: 3000
   pvSize: 3Gi
 

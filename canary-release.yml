@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
   - name: model-service
-    image: ghcr.io/remla2025-team10/model-service:v0.0.5
+    image: ghcr.io/remla2025-team10/model-service:latest
     ports:
     - containerPort: 3000
     env:
@@ -62,7 +62,7 @@ metadata:
 spec:
   containers:
   - name: app
-    image: ghcr.io/remla2025-team10/app-service:v1
+    image: ghcr.io/remla2025-team10/app-service:latest
     imagePullPolicy: Always
     ports:
     - name: http
@@ -87,7 +87,7 @@ metadata:
 spec:
   containers:
   - name: app
-    image: ghcr.io/remla2025-team10/app-service:v2  # Newer canary image version
+    image: ghcr.io/remla2025-team10/app-service:beta   # Newer canary image version
     imagePullPolicy: Always
     ports:
     - name: http

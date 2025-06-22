@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: model-service
-          image: ghcr.io/remla2025-team10/model-service:v0.0.5
+          image: ghcr.io/remla2025-team10/model-service:latest
           ports:
             - containerPort: 3000
           env:
@@ -58,7 +58,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/remla2025-team10/app-service:v0.5.2
+          image: ghcr.io/remla2025-team10/app-service:latest
           ports:
             - containerPort: 8080
           env:
