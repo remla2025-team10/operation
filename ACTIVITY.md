@@ -152,8 +152,8 @@
 <br> Approved PR: https://github.com/remla2025-team10/lib-ml/pull/3 (A1),  https://github.com/remla2025-team10/operation/pull/42 (A1)
 
 -- Sahar Marossi --
-<br>Created PR:
-<br>Approved PR:
+<br>Created PR: https://github.com/remla2025-team10/operation/pull/40 (A2)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/44 (A5)
 
 -- Koen --
 <br> Created PR:
@@ -161,7 +161,7 @@
 
 -- Maosheng --
 <br> Created PR:
-<br> Approved PR:
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/40 (A2)
 
 -- Haoran --
 <br> Created PR:
