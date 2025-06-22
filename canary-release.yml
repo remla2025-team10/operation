@@ -55,12 +55,18 @@ metadata:
   labels:
     app: app-service
     version: v1
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "8080"
 spec:
   containers:
   - name: app
-    image: ghcr.io/remla2025-team10/app-service:v0.5.2
+    image: ghcr.io/remla2025-team10/app-service:v1
+    imagePullPolicy: Always
     ports:
-    - containerPort: 8080
+    - name: http
+      containerPort: 8080
     env:
     - name: PORT
       value: "8080"
@@ -74,12 +80,18 @@ metadata:
   labels:
     app: app-service
     version: v2
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "8080"
 spec:
   containers:
   - name: app
-    image: ghcr.io/remla2025-team10/app-service:v0.7.0   # Newer canary image version
+    image: ghcr.io/remla2025-team10/app-service:v2  # Newer canary image version
+    imagePullPolicy: Always
     ports:
-    - containerPort: 8080
+    - name: http
+      containerPort: 8080
     env:
     - name: PORT
       value: "8080"
@@ -195,6 +207,26 @@ spec:
         host: kiali.istio-system.svc.cluster.local
         port:
           number: 20001
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: grafana-vs
+  # namespace: istio-system
+spec:
+  gateways:
+  - my-gateway
+  hosts:
+  - "grafana.local"
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: grafana.istio-system.svc.cluster.local
+        port:
+          number: 3000
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
