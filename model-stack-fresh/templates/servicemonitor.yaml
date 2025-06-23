@@ -9,6 +9,7 @@ spec:
   endpoints:
   - interval: {{ .Values.serviceMonitor.interval }}
     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+    port: http
   selector:
     matchLabels:
       app: {{ include "model-stack.fullname" . }}-app

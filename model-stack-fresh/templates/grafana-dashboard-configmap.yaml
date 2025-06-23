@@ -9,26 +9,7 @@ data:
   grafana-dashboard.json: |-
     {
       "annotations": {
-        "list": [
-          {
-            "builtIn": 1,
-            "datasource": {
-              "type": "datasource",
-              "uid": "grafana"
-            },
-            "enable": true,
-            "hide": true,
-            "iconColor": "rgba(0, 211, 255, 1)",
-            "name": "Annotations & Alerts",
-            "target": {
-              "limit": 100,
-              "matchAny": false,
-              "tags": [],
-              "type": "dashboard"
-            },
-            "type": "dashboard"
-          }
-        ]
+        "list": []
       },
       "editable": true,
       "fiscalYearStartMonth": 0,
@@ -38,10 +19,6 @@ data:
       "liveNow": false,
       "panels": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
           "gridPos": {
             "h": 5,
             "w": 24,
@@ -49,24 +26,10 @@ data:
             "y": 0
           },
           "id": 1,
-          "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
-            },
-            "content": "# A/B Test Dashboard \n\nThis dashboard is used to compare the performance differences between two versions of an application, helping you evaluate which version performs better.\n\nMetrics include: user interactions, conversion rates, feedback sentiment, response time, and other key indicators.",
-            "mode": "markdown"
-          },
-          "pluginVersion": "10.4.0",
           "title": "Dashboard Introduction",
           "type": "text"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -118,28 +81,25 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "histogram_quantile(0.95, sum(rate(performance_metrics_bucket{version=\"1\"}[5m])) by (le, operation))",
-              "legendFormat": "v1 {{operation}}",
+              "legendFormat": "v1 {{`{{operation}}`}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "histogram_quantile(0.95, sum(rate(performance_metrics_bucket{version=\"2\"}[5m])) by (le, operation))",
               "hide": false,
-              "legendFormat": "v2 {{operation}}",
+              "legendFormat": "v2 {{`{{operation}}`}}",
               "range": true,
               "refId": "B"
             }
@@ -148,10 +108,6 @@ data:
           "type": "stat"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -198,12 +154,10 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "current_users{version=\"1\"}",
@@ -213,8 +167,7 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "current_users{version=\"2\"}",
@@ -228,10 +181,6 @@ data:
           "type": "stat"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -283,12 +232,10 @@ data:
             "showThresholdMarkers": true,
             "sizing": "auto"
           },
-          "pluginVersion": "10.4.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "conversion_metrics{metric_type=\"rate\",version=\"1\"}",
@@ -298,8 +245,7 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "conversion_metrics{metric_type=\"rate\",version=\"2\"}",
@@ -313,10 +259,6 @@ data:
           "type": "gauge"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -390,12 +332,10 @@ data:
               "sort": "none"
             }
           },
-          "pluginVersion": "9.3.6",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "rate(version_interactions_total{interaction_type=\"click\",version=\"1\"}[5m])",
@@ -405,8 +345,7 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "rate(version_interactions_total{interaction_type=\"click\",version=\"2\"}[5m])",
@@ -420,10 +359,6 @@ data:
           "type": "timeseries"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -491,28 +426,25 @@ data:
             "xTickLabelRotation": 0,
             "xTickLabelSpacing": 0
           },
-          "pluginVersion": "9.3.6",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(feedback_metrics_total{version=\"1\"}) by (sentiment)",
-              "legendFormat": "v1 {{sentiment}}",
+              "legendFormat": "v1 {{`{{sentiment}}`}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(feedback_metrics_total{version=\"2\"}) by (sentiment)",
               "hide": false,
-              "legendFormat": "v2 {{sentiment}}",
+              "legendFormat": "v2 {{`{{sentiment}}`}}",
               "range": true,
               "refId": "B"
             }
@@ -521,10 +453,6 @@ data:
           "type": "barchart"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -628,8 +556,7 @@ data:
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "feedback_metrics_total{feedback_type=\"yes\",version=\"1\"}",
@@ -639,8 +566,7 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "feedback_metrics_total{feedback_type=\"no\",version=\"1\"}",
@@ -651,8 +577,7 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "feedback_metrics_total{feedback_type=\"yes\",version=\"2\"}",
@@ -663,8 +588,7 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "type": "prometheus"
               },
               "editorMode": "code",
               "expr": "feedback_metrics_total{feedback_type=\"no\",version=\"2\"}",

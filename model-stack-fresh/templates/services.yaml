@@ -21,6 +21,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-{{ $as.name }}
+  labels:
+    app: {{ include "model-stack.fullname" . }}-app
 spec:
   selector:
     app: {{ .Release.Name }}-{{ $as.name }}
