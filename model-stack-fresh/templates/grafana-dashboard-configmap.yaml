@@ -9,16 +9,33 @@ data:
   grafana-dashboard.json: |-
     {
       "annotations": {
-        "list": []
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
       },
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 10,
+      "id": 29,
       "links": [],
-      "liveNow": false,
       "panels": [
         {
+          "description": "",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 5,
             "w": 24,
@@ -26,7 +43,17 @@ data:
             "y": 0
           },
           "id": 1,
-          "title": "Dashboard Introduction",
+          "options": {
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            },
+            "content": "# A/B Test Dashboard \n\nThis dashboard is used to compare the performance differences between two versions of an application, helping you evaluate which version performs better.\n\nMetrics include: user interactions, conversion rates, feedback sentiment, response time, and other key indicators.",
+            "mode": "markdown"
+          },
+          "pluginVersion": "12.0.2",
+          "title": "",
           "type": "text"
         },
         {
@@ -41,8 +68,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "yellow",
@@ -70,6 +96,7 @@ data:
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "mean"
@@ -81,6 +108,7 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
+          "pluginVersion": "12.0.2",
           "targets": [
             {
               "datasource": {
@@ -118,8 +146,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -143,6 +170,7 @@ data:
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
@@ -154,6 +182,7 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
+          "pluginVersion": "12.0.2",
           "targets": [
             {
               "datasource": {
@@ -193,8 +222,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "red",
-                    "value": null
+                    "color": "red"
                   },
                   {
                     "color": "yellow",
@@ -232,6 +260,7 @@ data:
             "showThresholdMarkers": true,
             "sizing": "auto"
           },
+          "pluginVersion": "12.0.2",
           "targets": [
             {
               "datasource": {
@@ -271,6 +300,7 @@ data:
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -301,8 +331,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -328,10 +357,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "none"
             }
           },
+          "pluginVersion": "12.0.2",
           "targets": [
             {
               "datasource": {
@@ -390,8 +421,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -484,8 +514,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -602,8 +631,9 @@ data:
           "type": "barchart"
         }
       ],
+      "preload": false,
       "refresh": "",
-      "schemaVersion": 39,
+      "schemaVersion": 41,
       "tags": [
         "ab-testing",
         "prometheus"
@@ -619,6 +649,5 @@ data:
       "timezone": "",
       "title": "A/B Testing Analysis Dashboard",
       "uid": "dep2wc4jfcuf4e",
-      "version": 2,
-      "weekStart": ""
+      "version": 1
     }

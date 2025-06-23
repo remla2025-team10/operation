@@ -60,9 +60,9 @@ spec:
             prefix: /
       route:
         - destination:
-            host: grafana.istio-system.svc.cluster.local
+            host: myprom-grafana.monitoring.svc.cluster.local
             port:
-              number: 3000
+              number: 80
 
 ---
 # Istio VirtualService for app-service
