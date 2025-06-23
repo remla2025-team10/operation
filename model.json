@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 29,
   "links": [],
   "panels": [
     {
@@ -99,7 +99,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "disableTextWrap": false,
@@ -238,8 +238,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 8
+        "x": 12,
+        "y": 0
       },
       "id": 2,
       "options": {
@@ -259,21 +259,21 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "active_users_count",
+          "expr": "sum(current_users)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
-          "legendFormat": "__auto",
+          "legendFormat": "Total Active Users",
           "range": true,
           "refId": "A",
           "useBackend": false
         }
       ],
-      "title": "Active Users",
+      "title": "Total Active Users",
       "type": "stat"
     },
     {
@@ -337,9 +337,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 24,
         "x": 0,
-        "y": 16
+        "y": 8
       },
       "id": 1,
       "options": {
@@ -355,7 +355,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -364,7 +364,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(resturant_reviews_total{sentiment=\"0\"}[5m])",
+          "expr": "rate(restaurant_reviews_total{sentiment=\"0\"}[5m])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "Negative Reviews",
@@ -378,7 +378,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "rate(resturant_reviews_total{sentiment=\"1\"}[5m])",
+          "expr": "rate(restaurant_reviews_total{sentiment=\"1\"}[5m])",
           "hide": false,
           "instant": false,
           "legendFormat": "Positive Reviews",
@@ -392,7 +392,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "resturant_reviews_total",
+          "expr": "restaurant_reviews_total",
           "fullMetaSearch": false,
           "hide": true,
           "includeNullMetadata": true,
@@ -403,7 +403,7 @@
           "useBackend": false
         }
       ],
-      "title": "New panel",
+      "title": "Rate of incoming positive and negative reviews over time",
       "type": "timeseries"
     }
   ],
@@ -421,5 +421,5 @@
   "timezone": "browser",
   "title": "A3 Dashboard",
   "uid": "73b4b56c-2625-42b8-93c0-75e310a08b1a",
-  "version": 4
+  "version": 7
 }
