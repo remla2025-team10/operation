@@ -201,7 +201,9 @@ helm repo list
 ```
 Then install prometheus, you can give any prometheus release name but the default is <b>myprom</b>. If you change this be sure to also change the value of `serviceMonitor.additionalLabels.release` in `model-stack/values.yaml`.
 ```
-helm install myprom prom-repo/kube-prometheus-stack
+helm install myprom prom-repo/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace
 ```
 
 #### 3. Deployment
