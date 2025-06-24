@@ -206,6 +206,27 @@ helm install myprom prom-repo/kube-prometheus-stack \
   --create-namespace
 ```
 
+#### 3. Install istio
+
+Make sure that a current version of `istioctl` is installed and accessible on your machine, this example uses version 1.26.1. Then install istio in the `istio-system` namespace.
+
+```
+istioctl install
+```
+
+Then apply the preconfigured `prometheus`, `jeager` and `kiali` files onto you minikube cluster. These files come in a parent folder that your `istioctl` installation came with. 
+
+```
+kubectl apply -f istio-1.26.1/samples/addons/prometheus.yaml
+kubectl apply -f istio-1.26.1/samples/addons/jeager.yaml
+kubectl apply -f istio-1.26.1/samples/addons/kiali.yaml
+```
+
+Now make sure that istio can automatically inject a sidecar to each pod in the default namespace.
+
+```
+kubectl label namespace default istio-injection=enabled --overwrite
+```
 #### 3. Deployment
 Manually create a `/mnt/shared` directory:
 ```bash
@@ -214,13 +235,14 @@ sudo mkdir -p /mnt/shared
 exit
 ```
 
-Then navigate to the model-stack directory (which stores the helm chart)
-```bash
-cd operation/model-stack
+Then set the environment variable
 ```
+export KUBECONFIG=admin.conf
+```
+
 Then, install the helm release
 ```
-helm install <release-name> .
+helm install <release-name> ./model-stack-fresh
 ```
 
 #### 4. Port forward
