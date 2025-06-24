@@ -236,7 +236,7 @@ exit
 ```
 
 Then set the environment variable
-```
+``` 
 export KUBECONFIG=admin.conf
 ```
 
@@ -245,14 +245,35 @@ Then, install the helm release
 helm install <release-name> ./model-stack-fresh
 ```
 
-#### 4. Port forward
+#### 4. Access application service
+Open a minikube tunnel to expose minikube's istio-ingressgateway to the host, which functions as minikubes loadBalancer.
 
-Run the following to port forward the app service:
 ```
-kubectl port-forward svc/<release-name>-app-service 8080:8080
+minikube tunnel
 ```
 
-Now you can access the app via `http://localhost:8080/`
+Now get the external IP address from istio-gateway:
+```
+kubectl get svc istio-ingressgateway -n istio-system
+```
+
+Now add these lines to your /etc/hosts file:
+
+```
+<istio-gateway-external-ip> app.local
+<istio-gateway-external-ip> prometheus.local
+<istio-gateway-external-ip> kiali.local
+<istio-gateway-external-ip> grafana.local
+```
+
+You make sure to flush your DNS cache for previous entries for app.local and such so that these changes take place.
+
+Linux (ubuntu >= 20.00)
+```
+sudo resolvectl flush-caches
+```
+
+You can now access these files in your browser form `app.local`, `grafana.local`, `prometheus.local` and `kiali.local`.
 
 #### Access Prometheus and Grafana
 If you have confirmed that the services for prometheus and grafana are running, you can access their dashboards with the following command (tip: launch new terminals for both services because the port-forwarding command is blocking):
