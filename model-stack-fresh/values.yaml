@@ -30,3 +30,8 @@ prometheusRule:
 
 alertmanager:
   receiverEmail: alerts.remla.team10@gmail.com
+
+grafana:
+  dashboardsConfigMaps:
+    sentiment-dashboard: "sentiment-dashboard"
+  additionalDataSources: []
