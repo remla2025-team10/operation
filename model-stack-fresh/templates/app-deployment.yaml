@@ -1,0 +1,69 @@
+{{- $ms := .Values.modelService -}}
+
+---
+# Deployment for app-service v1 (stable)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ $as.name }}-v1
+  labels:
+    app: {{ .Release.Name }}-{{ $as.name }}
+    version: v1
+spec:
+  replicas: {{ $as.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ $as.name }}
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ $as.name }}
+        version: v1
+    spec:
+      containers:
+        - name: {{ $as.name }}
+          image: {{ $as.image }}
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: {{ $as.port }}
+          env:
+            - name: PORT
+              value: "{{ $as.port }}"
+            - name: MODEL_SERVICE_URL
+              value: "http://{{ .Release.Name }}-{{ $ms.name }}:{{ $ms.port }}"
+
+---
+# Deployment for app-service v2 (canary)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ $as.name }}-v2
+  labels:
+    app: {{ .Release.Name }}-{{ $as.name }}
+    version: v2
+spec:
+  replicas: {{ $as.canaryReplicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ $as.name }}
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ $as.name }}
+        version: v2
+    spec:
+      containers:
+        - name: {{ $as.name }}
+          image: {{ $as.canaryImage }}
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: {{ $as.port }}
+          env:
+            - name: PORT
+              value: "{{ $as.port }}"
+            - name: MODEL_SERVICE_URL
+              value: "http://{{ .Release.Name }}-{{ $ms.name }}:{{ $ms.port }}"
