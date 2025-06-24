@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: sentiment-dashboard
+  name: {{ .Release.Name }}-sentiment-dashboard
   labels:
     grafana_dashboard: '1'
     app.kubernetes.io/name: grafana
