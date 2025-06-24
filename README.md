@@ -81,6 +81,14 @@ You can run the following command from the host to finalize the cluster setup:
 ansible-playbook -u vagrant -i 192.168.56.100, finalize.yml 
 ```
 
+### Install application with Helm
+After the cluster setup is done, you can install our Helm chart for the application stack as follows:
+
+```bash
+export KUBECONFIG=admin.conf
+helm install myapp ./model-stack-fresh
+```
+
 #### Sticky sessions
 After the above steps are complete, you should be able to utilize sticky sessions to determine which app version you are routed to.
 The users not selected for the experiment won't have the `x-user` header set. In this case, due to limitations with the sticky session header configuration, we implement 90/10 routing to v1:
