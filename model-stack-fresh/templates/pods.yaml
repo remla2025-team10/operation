@@ -25,9 +25,8 @@ spec:
           mountPath: /model-service/models
   volumes:
     - name: {{ .Release.Name }}-model-volume
-      hostPath:
-        path: ./
-        type: Directory
+      persistentVolumeClaim:
+        claimName: {{ .Release.Name }}-model-pvc
 
 ---
 # model-service v2 (canary)
@@ -52,9 +51,8 @@ spec:
           mountPath: /model-service/models
   volumes:
     - name: {{ .Release.Name }}-model-volume
-      hostPath:
-        path: ./
-        type: Directory
+      persistentVolumeClaim:
+        claimName: {{ .Release.Name }}-model-pvc
 
 ---
 # app-service v1 (stable)
