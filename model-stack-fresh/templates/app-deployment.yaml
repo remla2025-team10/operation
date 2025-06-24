@@ -1,4 +1,5 @@
 {{- $ms := .Values.modelService -}}
+{{- $as := .Values.appService -}}
 
 ---
 # Deployment for app-service v1 (stable)

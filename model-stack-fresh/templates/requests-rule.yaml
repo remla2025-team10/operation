@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}-request-rate-alert
   namespace: {{ .Release.Namespace }}
   labels:
-    release: {{ Values.prometheusRule.additionalLabels.release }}
+    release: {{ .Values.prometheusRule.additionalLabels.release }}
 spec:
   groups:
     - name: request-rate.rules

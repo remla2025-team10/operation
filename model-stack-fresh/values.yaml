@@ -35,9 +35,4 @@ alertmanager:
   senderEmail: alerts.remla.team10@gmail.com
   smtpSecret:
     name: smtp-password-secret
-    keu: smtp_password
-
-grafana:
-  dashboardsConfigMaps:
-    sentiment-dashboard: "sentiment-dashboard"
-  additionalDataSources: []
+    key: smtp_password
