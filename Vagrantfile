@@ -70,7 +70,7 @@ Vagrant.configure("2") do |config|
 
         # active controller node
         f.puts "[ctrl]"
-        f.puts "ctrl=92.168.56.100"
+        f.puts "ctrl=192.168.56.100"
 
         # active worker nodes (loop through each one)
         f.puts "\n[nodes]"
