@@ -33,6 +33,8 @@ prometheusRule:
 alertmanager:
   receiverEmail: alerts.remla.team10@gmail.com
   senderEmail: alerts.remla.team10@gmail.com
+  namespace: monitoring
+  release: myprom
   smtpSecret:
     name: smtp-password-secret
     key: smtp_password
