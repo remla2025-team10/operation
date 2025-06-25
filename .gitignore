@@ -4,3 +4,4 @@ admin.conf
 .idea/
 dashboard-admin-token.txt
 models/
+inventory.cfg
