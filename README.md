@@ -66,7 +66,7 @@ ctrl=192.168.56.100
 
 [nodes] # active worker nodes
 node-1=192.168.56.101
-node-2=192.168.56.101
+node-2=192.168.56.102
 ```
 
 
@@ -133,7 +133,7 @@ sudo systemd-resolve --flush-caches
 
 When everything is complete, the Kubernetes Dashboard should be accessible at [dashboard.local](dashboard.local), our app should be accessible at [app.local](app.local), the kiali dashboard should be accessible at [kiali.local](kiali.local), the grafana dashboard should be accessible at [grafana.local](grafana.local), and the prometheus dashboard should be accessible at [prometheus.local](prometheus.local).
 
-To log in, generate an admin token by running this command on the control node:
+To log in, generate an admin token by running this command on the control node (`vagrant ssh ctrl`):
 ```bash
 kubectl -n kubernetes-dashboard create token admin-user
 ```
@@ -339,7 +339,7 @@ The application is structured in the following way:
     - `general.yaml`: Configures all VMs with necessary prerequisites for Kubernetes, including required system settings.
     - `ctrl.yaml`: Initializes the Kubernetes cluster on the control node.
     - `node.yaml`: Configures worker nodes and joins them to the Kubernetes cluster.
-    - `finalize.yaml`: Installed MetalLB, NGinx Ingress, Dashboard, and Istio service mesh (+ addons) for load balancing and routing.
+- `finalize.yaml`: Installed MetalLB, NGinx Ingress, Dashboard, and Istio service mesh (+ addons) for load balancing and routing.
 - `docs/`
     - `continuous-experimentation.md`: A/B testing experiment documentation.
     - `deployment.md`: Deployment description details.
