@@ -223,11 +223,11 @@ Make sure that a current version of `istioctl` is installed and accessible on yo
 istioctl install
 ```
 
-Then apply the preconfigured `prometheus`, `jeager` and `kiali` files onto you minikube cluster. These files come in a parent folder that your `istioctl` installation came with. 
+Then apply the preconfigured `prometheus`, `jaeger` and `kiali` files onto you minikube cluster. These files come in a parent folder that your `istioctl` installation came with. 
 
 ```
 kubectl apply -f istio-1.26.1/samples/addons/prometheus.yaml
-kubectl apply -f istio-1.26.1/samples/addons/jeager.yaml
+kubectl apply -f istio-1.26.1/samples/addons/jaeger.yaml
 kubectl apply -f istio-1.26.1/samples/addons/kiali.yaml
 ```
 
