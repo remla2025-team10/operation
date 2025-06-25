@@ -1,0 +1,76 @@
+{{- $ms := .Values.modelService -}}
+
+---
+# Deployment for model-service v1 (stable)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ $ms.name }}-v1
+  labels:
+    app: {{ .Release.Name }}-{{ $ms.name }}
+    version: v1
+spec:
+  replicas: {{ $ms.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ $ms.name }}
+      version: v1
+  template:
+    metadata:
+      labels:
+        # These labels must match the spec.selector.matchLabels above
+        app: {{ .Release.Name }}-{{ $ms.name }}
+        version: v1
+    spec:
+      containers:
+        - name: {{ $ms.name }}
+          image: {{ $ms.image }}
+          ports:
+            - containerPort: {{ $ms.port }}
+          env:
+            - name: PORT
+              value: "{{ $ms.port }}"
+          volumeMounts:
+            - name: {{ .Release.Name }}-model-volume
+              mountPath: /model-service/models
+      volumes:
+        - name: {{ .Release.Name }}-model-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-model-pvc
+
+---
+# Deployment for model-service v2 (canary)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ $ms.name }}-v2
+  labels:
+    app: {{ .Release.Name }}-{{ $ms.name }}
+    version: v2
+spec:
+  replicas: {{ $ms.canaryReplicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ $ms.name }}
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ $ms.name }}
+        version: v2
+    spec:
+      containers:
+        - name: {{ $ms.name }}
+          image: {{ $ms.canaryImage }}
+          ports:
+            - containerPort: {{ $ms.port }}
+          env:
+            - name: PORT
+              value: "{{ $ms.port }}"
+          volumeMounts:
+            - name: {{ .Release.Name }}-model-volume
+              mountPath: /model-service/models
+      volumes:
+        - name: {{ .Release.Name }}-model-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-model-pvc

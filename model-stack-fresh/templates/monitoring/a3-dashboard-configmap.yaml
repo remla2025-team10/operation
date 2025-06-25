@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: a3-dashboard
+  name: {{ .Release.Name }}-a3-dashboard
   labels:
     grafana_dashboard: '1'
     app.kubernetes.io/name: grafana
