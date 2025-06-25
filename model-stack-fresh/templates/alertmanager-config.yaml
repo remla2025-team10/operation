@@ -1,21 +1,24 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
-  name: {{ .Release.Name }}-alerts
-  namespace: {{ .Release.Name }}
+  name: "{{ .Release.Name }}-alerts"
+  namespace: {{ .Release.Namespace }}
   labels:
-    alertmanagerConfig: "model-stack"
+    alertmanagerConfig: {{ .Values.alert.discoveryLabel }}
 spec:
   route:
-    receiver: {{ .Release.Name }}-email-alert
+    receiver: '{{ .Release.Name }}-email-alert'
+    groupBy: ['alertname']
+    groupWait: 10s 
+    groupInterval: 1m
+    repeastInterval: 1m
   receivers:
-    - name: {{ .Release.Name }}-email-alert
+    - name: '{{ .Release.Name }}-email-alert'
       emailConfigs:
         - smarthost: smtp.gmail.com:587
-          to: {{ .Values.alertmanager.receiverEmail }}
-          sendResolved: true
-          from: {{ .Values.alertmanager.senderEmail }}
-          authUsername: {{ .Values.alertmanager.senderEmail }}
+          to: {{ .Values.alert.receiverEmail }}
+          from: {{ .Values.alert.senderEmail }}
+          authUsername: {{ .Values.alert.senderEmail }}
           authPassword:
-            name: {{ .Values.alertmanager.smtpSecret.name }}
-            key: {{ .Values.alertmanager.smtpSecret.key }}
+            name: {{ .Values.alert.smtpSecret.name }}
+            key: {{ .Values.alert.smtpSecret.key }}

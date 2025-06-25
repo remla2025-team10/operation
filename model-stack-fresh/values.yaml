@@ -28,13 +28,13 @@ serviceMonitor:
 
 prometheusRule:
   additionalLabels:
-    release: myprom
+    release: "myprom"
 
-alertmanager:
-  receiverEmail: alerts.remla.team10@gmail.com
-  senderEmail: alerts.remla.team10@gmail.com
-  namespace: monitoring
-  release: myprom
+alert:
+  enabled: true
+  discoveryLabel: "model-stack"
+  receiverEmail: "alerts.remla.team10@gmail.com" # Use your actual email
+  senderEmail: "alerts.remla.team10@gmail.com"
   smtpSecret:
-    name: smtp-password-secret
-    key: smtp_password
+    name: "smtp-password-secret"
+    key: "smtp_password"
