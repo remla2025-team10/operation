@@ -2,15 +2,12 @@ apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
   name: {{ .Release.Name }}-alerts
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Release.Name }}
   labels:
     alertmanagerConfig: "model-stack"
 spec:
   route:
     receiver: {{ .Release.Name }}-email-alert
-    matchers:
-      - name: "release"
-        value: "{{ .Release.Name }}"
   receivers:
     - name: {{ .Release.Name }}-email-alert
       emailConfigs:
