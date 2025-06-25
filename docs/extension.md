@@ -38,7 +38,7 @@ Another branch named `gh-pages` will be included, which will be used to publish 
 helm repo add remla-2025-team10 https://remla-2025-team10.github.io/helm-charts
 ```
 
-We could therefore configure the `operation` repository to automatically (or manually) pull the latest chart version with `helm upgrade`. For example, we could use a bash script that parses the latest version from `index.yaml` in the `helm-chart` repo, and then automates its deployment (via `helm upgrade`).
+We could therefore configure the `operation` repository to automatically (or manually) pull the latest chart version with `helm repo update`.
 
 Additionally, with GitOps tools like ArgoCD or Flux, it is possible to automatically update the KB cluster upon new helm chart releases (in an even further extension). 
 

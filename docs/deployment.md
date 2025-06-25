@@ -3,7 +3,7 @@ In this document we outline the architecture of our sentiment analysis applicati
 
 ## 1. Project Overview
 
-The application follow a microservice architecture and is deployed on a Kubernetes cluster (with Helm), utilizing an Istio service mesh for traffic management and observability. The following visualization gives a high-level overview of the project's components and their interactions, alongside the general data flow:
+The application follows a microservice architecture and is deployed on a Kubernetes cluster (with Helm), utilizing an Istio service mesh for traffic management and observability. The following visualization gives a high-level overview of the project's components and their interactions, alongside the general data flow:
 
 ![Deployment Architecture Diagram](pics/Deployment-Diagram.png)
 
@@ -12,9 +12,9 @@ The application follow a microservice architecture and is deployed on a Kubernet
 More specifically, the project deployment process consists of the following:
 - **Application Services** The application follows a microservice architecture with the following services:
     - `app-service`: contains the app's frontend and backend service. It makes POST requests to the model service in order to predict the sentiment of the user's input (i.e. the restaurant review).
-    - `model-service`: wrapper service for the released ML model, using REST API to expose the model to the other microservice components. It is only internally accessible via the app-service.
+    - `model-service`: wrapper service for the released ML model, using REST API to expose the model to the other microservice components.
 - **Kubernetes Cluster** provisioned with Vagrant and Ansible, and orchestrates all workloads and resources.
-- **Istio Service Mesh** Manages traffic routing and observability It is the primary gateway for the user through an external IP exposed by MetalLB.
+- **Istio Service Mesh** Manages traffic routing and observability. It is the primary gateway for the user through an external IP exposed by MetalLB.
 - **Monitoring Stack**: Enables monitoring with Prometheus, providing visualizations with Grafana, and traffic observability with Kiali and Jaeger.
 - **Local Docker Compose**: Local deployment possibility with Docker Compose
 
