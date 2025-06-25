@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "model-stack.fullname" . }}-app-monitor
+  labels:
+    {{- include "model-stack.labels" . | nindent 4 }}
+    release: {{ .Values.serviceMonitor.additionalLabels.release }}
+spec:
+  endpoints:
+  - interval: {{ .Values.serviceMonitor.interval }}
+    scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+    port: http
+  selector:
+    matchLabels:
+      app: {{ include "model-stack.fullname" . }}-app
