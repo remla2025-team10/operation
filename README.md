@@ -200,7 +200,16 @@ Then install prometheus, you can give any prometheus release name but the defaul
 ```
 helm install myprom prom-repo/kube-prometheus-stack \
   --namespace monitoring \
-  --create-namespace
+  --create-namespace \
+  -f prometheus-values.yaml
+```
+
+If you decide to later change something in the Prometheus stack you can update it with:
+
+```
+helm upgrade myprom prom-repo/kube-prometheus-stack \
+  --namespace monitoring  \
+  -f prometheus-values.yaml
 ```
 
 #### 3. Install istio
@@ -299,8 +308,14 @@ kubectl create secret generic smtp-password-secret \
 To set your own gmail address as the target to receive the alerts, you can do:
 
 ```bash
-helm upgrade <release-name> . \
-  --set alertmanager.receiverEmail=<your-email>
+helm upgrade <release-name> ./model-stack \
+ --set alert.receiverEmail=<your-email>
+```
+
+or alter the value of `alert.receiverEmail` in `./model-stack/values.yaml` and run:
+
+```bash
+helm upgrade <release-name> ./model-stack
 ```
 
 ## Relevant Files and Information

@@ -33,7 +33,7 @@ prometheusRule:
 alert:
   enabled: true
   discoveryLabel: "model-stack"
-  receiverEmail: "alerts.remla.team10@gmail.com" # Use your actual email
+  receiverEmail: "alerts.remla.team10@gmail.com"
   senderEmail: "alerts.remla.team10@gmail.com"
   smtpSecret:
     name: "smtp-password-secret"

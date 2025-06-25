@@ -14,19 +14,17 @@ spec:
           for: 2m
           labels:
             severity: warning
-            release: {{ .Release.Name }}
+            release: "{{ .Release.Name }}"
+            namespace: "{{ .Release.Namespace }}"
           annotations:
             summary: ">15 requests per minute for 2 minutes"
         - alert: ApplicationTestAlert
-          # This expression sums the total number of Flask HTTP requests for this specific
-          # Helm release's app-service. It will fire when the total count is > 2 (i.e., 3 or more).
-          expr: sum(flask_http_request_total) > 93
-          # 'for: 0s' makes the alert fire instantly once the condition is met.
+          expr: sum(flask_http_request_total) > 130
           for: 0s
           labels:
-            # It MUST have the release label to be routed correctly by Alertmanager.
-            severity: critical # Make it stand out from normal alerts.
+            severity: critical
             release: "{{ .Release.Name }}"
+            namespace: "{{ .Release.Namespace }}"
           annotations:
             summary: "Test alert triggered for {{ .Release.Name }}"
-            description: "This is a test to confirm the alerting pipeline is working correctly for the {{ .Release.Name }} application."
+            description: "This is a test to confirm the alerting pipeline is working correctly for the {{ .Release.Name }} application. Let's see if it works finally!"
