@@ -37,7 +37,7 @@ grafana:
 
 rateLimiting:
   enabled: true
-  requestsPerMin: 60 # rate limit set to 60 requests per minute
+  requestsPerMin: 250 # rate limit set to 250 requests per minute
 
 alert:
   enabled: true

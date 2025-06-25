@@ -2,8 +2,8 @@
 
 This application uses a machine learning model to classify given restaurant reviews based on their sentiment, being either positive (1) or negative (0).
 
-## Starting the Application
-To setup and run the application, do the following:
+## Docker Compose
+To setup and run the application using Docker Compoase, do the following:
 ```bash
 git clone https://github.com/remla2025-team10/operation
 cd operation
@@ -16,8 +16,8 @@ You can then access the application at [http://localhost:8080](http://localhost:
 ### Additional startup configuration
 There are also several environment variables which can be changed:
 ```bash
-APP_IMAGE=ghcr.io/remla2025-team10/app-service:v0.4.11
-MODEL_SERVICE_IMAGE=ghcr.io/remla2025-team10/model-service:v0.0.3
+APP_IMAGE=ghcr.io/remla2025-team10/app-service:latest
+MODEL_SERVICE_IMAGE=ghcr.io/remla2025-team10/model-service:latest
 MODEL_SERVICE_PORT=3000
 APP_PORT=8080
 ```
@@ -58,6 +58,17 @@ To apply the Ansible playbook, run:
 vagrant provision
 ```
 
+### Inventory config generation
+Upon completion, an `inventory.cfg` file is generated, which details the controller node, and active worker node IP addresses. It has the following structure:
+```
+[ctrl] # controller node
+ctrl=192.168.56.100
+
+[nodes] # active worker nodes
+node-1=192.168.56.101
+node-2=192.168.56.101
+```
+
 
 ### Accessing the Kubernetes Cluster
 
@@ -86,15 +97,8 @@ After the cluster setup is done, you can install our Helm chart for the applicat
 
 ```bash
 export KUBECONFIG=admin.conf
-helm install myapp ./model-stack-fresh
+helm install myapp ./model-stack
 ```
-
-#### Sticky sessions
-After the above steps are complete, sticky sessions should be configured meaning that each subsequent request to `app.local` will lead to the same version.
-Sticky sessions were configured to work only when the initial request contains the `x-user` header, in which case upon the initial 90/10 routing is determined, a cookie is set, indicating the version that user should be routed to. In that case, all subsequent requests will check for the respective cookie header and always route to that version.
-
-If no `x-user` header is present, the requests won't be sticky and will always be 90/10 on subsequent requests.
-You can best test this via Postman, as if you set the header `x-user` and make the request, you should see the cookies contain the app version afterwards, and reruning the request will always lead you to the same version of the app.
 
 #### Local DNS Resolution
 
@@ -135,32 +139,33 @@ kubectl -n kubernetes-dashboard create token admin-user
 ```
 Copy the output token and use it to log in to the dashboard.
 
+#### Sticky sessions
+After the above steps are complete, sticky sessions should be configured meaning that each subsequent request to `app.local` will lead to the same version.
+Sticky sessions were configured to work only when the initial request contains the `x-user` header, in which case upon the initial 90/10 routing is determined, a cookie is set, indicating the version that user should be routed to. In that case, all subsequent requests will check for the respective cookie header and always route to that version.
+
+If no `x-user` header is present, the requests won't be sticky and will always be 90/10 on subsequent requests.
+You can best test this via Postman, as if you set the header `x-user` and make the request, you should see the cookies contain the app version afterwards, and reruning the request will always lead you to the same version of the app.
+
 #### Rate-limiting
 
-With istio installed, you can apply rate-limiting to the app.
+With istio installed, rate-limiting is implemented using `EnvoyFilter`. The rate limiting value can be configured in the `model-stack/value.yaml` file:
 
-First, SSH into the control node:
-```bash
-vagrant ssh ctrl
 ```
-
-Then apply the filter:
-```bash
-kubectl apply -f /vagrant/rate-limiting.yaml
+rateLimiting:
+  enabled: true
+  requestsPerMin: 250 # rate limit requests per minute.
 ```
-
-(You can also delete the filter from the control node with ```kubectl delete -f /vagrant/rate-limiting.yaml```)
 
 To test it, go to your main terminal and try the following script.
 ```bash
-for i in {1..20}; do   curl -I -H "Host: app.local" http://192.168.56.90/;   sleep 1; done
+for i in {1..250}; do curl -I -H "Host: app.local" app.local; sleep 0.1; done
 ```
- After ten `200 OK` requests, you will receive `429` status codes.
+ Once the local rate limit has been hit, you will receive `429` status codes.
 
 
 ### System Requirements
 
-The Kubernetes cluster requires:
+The Kubernetes cluster has the following requirements:
 - The default RAM requirement is 4GB for the control node and 6 GB for each worker node.
 - The default CPU requirement is 2 CPUs for each node.
 - You can change these in the `Vagrantfile`.
@@ -323,62 +328,76 @@ helm upgrade <release-name> ./model-stack
 
 ## Relevant Files and Information
 The application is structured in the following way:
-- **Operation Repository** is the starting point of the application and contains the files required to run the application, as explained above
-    - `Vagrantfile`: Defines the virtual machines configuration.
-    - `ansible/`: Contains Ansible playbooks for automated setup and configuration of the Kubernetes cluster
-        - `general.yaml`: Configures all VMs with necessary prerequisites for Kubernetes, including required system settings.
-        - `ctrl.yaml`: Initializes the Kubernetes cluster on the control node.
-        - `node.yaml`: Configures worker nodes and joins them to the Kubernetes cluster.
-        - `finalization.yaml`: Installed MetalLB, NGinx Ingress, Dashboard, (and Istio) for load balancing and routing
-    - `model-stack/`: Contains the Helm chart for deploying the application to Kubernetes
-        - `Chart.yaml`: Metadata about the Helm chart
-        - `values.yaml`: Default configuration values for the Helm chart
-        - `templates/_helpers.tpl`: Helper templates for the Helm chart
-        - `templates/deployment.yaml`: Kubernetes deployment configurations for app and model services
-        - `templates/service.yaml`: Service definitions for inter-service communication
-        - `templates/ingress.yaml`: Ingress configuration for external access
-        - `templates/servicemonitor.yaml`: ServiceMonitor configurations for Prometheus metrics collection
-        - `templates/alertmanager-config.yaml`: AlertManager configuration for notification settings
-        - `templates/requests-rule.yaml`: Custom Prometheus alerting rules
-    - `app-ingress/app-ingress.yaml`: Define ingress configurations for application routes.
-    - `kubernetes dashboard`
-        - `dashboard-adminuser.yaml`: Define ServiceAccount and CluterRoleBinding for a KB dashboard admin user.
-        - `ingress-dashboard`: Ingress configuration for exposing the KB dashboard.
-    - `canary-release.yml`: Defines KB resources for canary deployment.
-    - `finalization-istio.yml`: Install istio service mesh and addons (prometheus, jaeger, kiali).
-    - `rate-limiting.yaml`: Implements rate limiting using EnvoyFilter.
-    - `docs/`
-        - `deployment.md`: Deployment description details.
-        - `extension.md`: Extension proposal.
-- **App Service Repository** holds the relevant frontend and backend code for the application
-    - `app/models/model_handler.py` makes a post request to the model-service to get a sentiment prediction
-    - `app/routes/__init__.py` defines the routes used by the backend application
-    - `app/__init__.py` holds the overall backend application code
-    - `app/templates/index.html` defines the frontend code of the application
-- **Model Service Repository**
-    - `model-service/download_models.py` is used to download the classifier (and vectorizer) model used for the prediction
-    - `model-service/app.py` contains the Flask wrapper for the model, with an endpoint that can be accessed by the app-service to request a prediction for a given review
-- **Lib-ml Repository**
-    - `preprocess_sentiment_analysis/preprocess.py` is used to preprocess a given dataset by cleaning the text (removing non-alphabetical characters, converting all words to lowercase, removing stopwords, and Porter stemming). It saves the results into a processed CSV file.
-- **Lib-version**
-    - `src/lib_version/version_awerenes.py` is contains the package code used to retrieve the packages version at runtime.
-    - `src/lib_version/VERSION` is the config file that contains the build version. This file is used at build time to determine the versioning.
-- **Model training**
-    - `data/`: The folder containing all the data files
-        - `raw/`: Original raw data dumps
-        - `processed/`: The processed data directly used by the model
-    - `models/`: Containes the models which have already been trained
-    - `restaurant_model_training/`: The main package (module) of this project
-        - `config.py`: Contains the configurations such as default values and paths
-        - `dataset.py`: Logic for loading and preprocessing the data
-        - `features.py`: Logic for creating BOW features
-        - `modeling/`: Module containing logic for model training (`train.py`) and predicting (`predict.py`)
-    - `tests/`: The test files for the model
-        - `test_data_features.py`: Tests for data and features
-        - `test_infrastructure.py`: Tests for infrastructure
-        - `test_model_development.py`: Tests for model training, evaluation, robustness
-        - `test_monitoring.py`: Tests for model monitoring
-    - `requirements.txt`: The project dependencies
+
+**Operation Repository** is the starting point of the application and contains the files required to run the application, as explained above
+
+- `Vagrantfile`: Defines the virtual machines configuration.
+- `ansible/`: Contains Ansible playbooks for automated setup and configuration of the Kubernetes cluster
+    - `files/`:
+        - `kube-flannel.yml`
+        - `metallb-native.yaml`
+    - `general.yaml`: Configures all VMs with necessary prerequisites for Kubernetes, including required system settings.
+    - `ctrl.yaml`: Initializes the Kubernetes cluster on the control node.
+    - `node.yaml`: Configures worker nodes and joins them to the Kubernetes cluster.
+    - `finalize.yaml`: Installed MetalLB, NGinx Ingress, Dashboard, and Istio service mesh (+ addons) for load balancing and routing.
+- `docs/`
+    - `continuous-experimentation.md`: A/B testing experiment documentation.
+    - `deployment.md`: Deployment description details.
+    - `extension.md`: Extension proposal.
+- `kubernetes dashboard/`
+    - `dashboard-adminuser.yaml`: Define ServiceAccount and CluterRoleBinding for a KB dashboard admin user.
+    - `ingress-dashboard`: Ingress configuration for exposing the KB dashboard.
+- `model-stack/`: Contains the Helm chart for deploying the application to Kubernetes
+    - `Chart.yaml`: Metadata about the Helm chart
+    - `values.yaml`: Default configuration values for the Helm chart
+    - `templates/`
+        - `_helpers.tpl`: Helper templates for the Helm chart
+        - `alertmanager-config.yaml`: AlertManager configuration for notification settings.
+        - `app-deployment.yaml`:
+        - `destinationrules.yaml`:
+        - `istio-rate-limiting.yaml`:
+        - `isitiogateway.yaml`:
+        - `model-deployment.yaml`:
+        - `model-pv.yml`:
+        - `model-pvc.yml`:
+        - `requests-rule.yaml`: Custom Prometheus alerting rule.
+        - `servicemonitor.yaml`:
+        - `services.yaml`:
+        - `virtualservices.yaml`:
+
+**App Service Repository** holds the relevant frontend and backend code for the application
+- `app/models/model_handler.py` makes a post request to the model-service to get a sentiment prediction
+- `app/routes/__init__.py` defines the routes used by the backend application
+- `app/__init__.py` holds the overall backend application code
+- `app/templates/index.html` defines the frontend code of the application
+
+**Model Service Repository**
+- `model-service/download_models.py` is used to download the classifier (and vectorizer) model used for the prediction
+- `model-service/app.py` contains the Flask wrapper for the model, with an endpoint that can be accessed by the app-service to request a prediction for a given review
+
+**Lib-ml Repository**
+- `preprocess_sentiment_analysis/preprocess.py` is used to preprocess a given dataset by cleaning the text (removing non-alphabetical characters, converting all words to lowercase, removing stopwords, and Porter stemming). It saves the results into a processed CSV file.
+
+**Lib-version**
+- `src/lib_version/version_awerenes.py` is contains the package code used to retrieve the packages version at runtime.
+- `src/lib_version/VERSION` is the config file that contains the build version. This file is used at build time to determine the versioning.
+
+**Model training**
+- `data/`: The folder containing all the data files
+    - `raw/`: Original raw data dumps
+    - `processed/`: The processed data directly used by the model
+- `models/`: Containes the models which have already been trained
+- `restaurant_model_training/`: The main package (module) of this project
+    - `config.py`: Contains the configurations such as default values and paths
+    - `dataset.py`: Logic for loading and preprocessing the data
+    - `features.py`: Logic for creating BOW features
+    - `modeling/`: Module containing logic for model training (`train.py`) and predicting (`predict.py`)
+- `tests/`: The test files for the model
+    - `test_data_features.py`: Tests for data and features
+    - `test_infrastructure.py`: Tests for infrastructure
+    - `test_model_development.py`: Tests for model training, evaluation, robustness
+    - `test_monitoring.py`: Tests for model monitoring
+- `requirements.txt`: The project dependencies
 
 ## Repository Links
 For convenience, we list links to the available repositories used in this project:

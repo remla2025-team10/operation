@@ -1,5 +1,5 @@
 # Configurable worker count
-WORKER_COUNT = ENV['WORKER_COUNT'] ? ENV['WORKER_COUNT'].to_i : 1
+WORKER_COUNT = ENV['WORKER_COUNT'] ? ENV['WORKER_COUNT'].to_i : 2
 
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-24.04"
