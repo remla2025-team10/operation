@@ -76,29 +76,56 @@ spec:
   hosts:
     - "app.local"
   http:
-    - match:
-        - headers:
-            x-user:
-              exact: "experiment"
-          uri:
-            prefix: /
+    - name: sticky-request-v1
+      match:
+      - headers:
+          cookie:
+            regex: ".*app-version=v1.*"
       route:
-        - destination:
-            host: {{ .Release.Name }}-{{ $as.name }}
-            subset: v2
-          weight: 100
-    - match:
-        - uri:
-            prefix: /
+      - destination:
+          host: {{ .Release.Name }}-{{ $as.name }}
+          subset: v1
+    - name: sticky-request-v2
+      match:
+      - headers:
+          cookie:
+            regex: ".*app-version=v2.*"
       route:
-        - destination:
-            host: {{ .Release.Name }}-{{ $as.name }}
-            subset: v1
-          weight: 90
-        - destination:
-            host: {{ .Release.Name }}-{{ $as.name }}
-            subset: v2
-          weight: 10
+      - destination:
+          host: {{ .Release.Name }}-{{ $as.name }}
+          subset: v2
+    - name: initial-request-with-header
+      match:
+      - headers:
+          x-user:
+            regex: ".+"
+      route:
+      - destination:
+          host: {{ .Release.Name }}-{{ $as.name }}
+          subset: v1
+        weight: 90
+        headers:
+          response:
+            set:
+              set-cookie: "app-version=v1; Path=/"
+      - destination:
+          host: {{ .Release.Name }}-{{ $as.name }}
+          subset: v2
+        weight: 10
+        headers:
+          response:
+            set:
+              set-cookie: "app-version=v2; Path=/"
+    - name: initial-request-without-header
+      route:
+      - destination:
+          host: {{ .Release.Name }}-{{ $as.name }}
+          subset: v1
+        weight: 90
+      - destination:
+          host: {{ .Release.Name }}-{{ $as.name }}
+          subset: v2
+        weight: 10
 
 ---
 # Istio VirtualService for model-service consistency
