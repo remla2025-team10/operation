@@ -27,7 +27,7 @@ When this is done, the cluster utilizes Flannel CNI for pod networking, MetalLB 
 
 ### Istio Service Mesh
 
-Istio is installed as the service mesh for our cluster. The deployment is defined by using a Helm chart, which is detailed in `/model-stack-fresh`. It consists of the following resources:
+Istio is installed as the service mesh for our cluster. The deployment is defined by using a Helm chart, which is detailed in `/model-stack`. It consists of the following resources:
 
 - **Istio Ingress Gateway:** the entry point for all HTTP traffic managed by Istio.
 - **Dynamic Routing:** Makes use of Istio VirtualServices and DestinationRules to enable routing, including:
