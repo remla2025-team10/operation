@@ -81,14 +81,6 @@ You can run the following command from the host to finalize the cluster setup:
 ansible-playbook -u vagrant -i 192.168.56.100, finalize.yml
 ```
 
-### Install application with Helm
-After the cluster setup is done, you can install our Helm chart for the application stack as follows:
-
-```bash
-export KUBECONFIG=admin.conf
-helm install myapp ./model-stack-fresh
-```
-
 #### Sticky sessions
 After the above steps are complete, sticky sessions should be configured meaning that each subsequent request to `app.local` will lead to the same version.
 Sticky sessions were configured to work only when the initial request contains the `x-user` header, in which case upon the initial 90/10 routing is determined, a cookie is set, indicating the version that user should be routed to. In that case, all subsequent requests will check for the respective cookie header and always route to that version.

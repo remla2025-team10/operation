@@ -12,36 +12,6 @@
       s390x: s390x
       ppc64le: ppc64le
   tasks:
-
-    ########## Install Prometheus (kube-prometheus-stack) ##########
-    - name: Add Prometheus Community Helm repository
-      become_user: vagrant
-      shell: |
-        helm repo add prom-repo https://prometheus-community.github.io/helm-charts
-      args:
-        creates: "{{ ansible_env.HOME }}/.cache/helm/repository/prom-repo-index.yaml"
-
-    - name: Update all Helm repositories
-      become_user: vagrant
-      shell: helm repo update
-
-    - name: Install kube-prometheus-stack via Helm
-      become_user: vagrant
-      kubernetes.core.helm:
-        name: myprom
-        chart_ref: prom-repo/kube-prometheus-stack
-        release_namespace: monitoring
-        create_namespace: true
-        values:
-          grafana:
-            enabled: true
-            sidecar:
-              dashboards:
-                enabled: true
-                label: grafana_dashboard
-                labelValue: "1"
-
-
     ########## Install MetalLB ##########
     - name: Copy MetalLB to VM
       copy:
@@ -217,49 +187,40 @@
       command: kubectl label namespace default istio-injection=enabled --overwrite
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
-
     - name: Label kubernetes-dashboard namespace for automatic sidecar injection
       command: kubectl label namespace default istio-injection=enabled --overwrite
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 
 
+    - name: Deploy Prometheus addon
+      command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/prometheus.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
     - name: Deploy Jaeger addon
       command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/jaeger.yaml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 
-    - name: Wait for Jaeger addon to be ready
-      shell: |
-        kubectl wait --for=condition=ready pod -l app=jaeger -n istio-system --timeout=120s
+    - name: Deploy Kiali addon
+      command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/kiali.yaml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 
-    - name: Add Kiali Helm repository
-      become_user: vagrant
-      kubernetes.core.helm_repository:
-        name: kiali
-        repo_url: "https://kiali.org/helm-charts"
+    - name: Deploy Grafana addon
+      command: kubectl apply -f {{ istio_install_dir }}/istio-{{ istio_version }}/samples/addons/grafana.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
 
-    - name: Install Kiali Server
-      become_user: vagrant
-      kubernetes.core.helm:
-        name: kiali-server
-        chart_ref: kiali/kiali-server
-        release_namespace: istio-system
-        create_namespace: false # istio-system should already exist
-        values:
-          auth:
-            strategy: "anonymous"
-          external_services:
-            prometheus:
-              url: "http://myprom-kube-prometheus-sta-prometheus.monitoring.svc.cluster.local:9090"
-            grafana:
-              enabled: true
-              url: "http://myprom-grafana.monitoring.svc.cluster.local"
-            tracing:
-              enabled: true
-              in_cluster_url: "http://jaeger-query.istio-system:16686"
+    - name: Wait for addons to be ready
+      shell: |
+        kubectl wait --for=condition=ready pod -l app=prometheus -n istio-system --timeout=120s
+        kubectl wait --for=condition=ready pod -l app=jaeger -n istio-system --timeout=120s
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kiali -n istio-system --timeout=120s
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=grafana -n istio-system --timeout=120s
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
 
     ####### Install Kubernetes Dashboard #######
     - name: Add Kubernetes Dashboard repository
@@ -284,7 +245,6 @@
       become_user: vagrant
       shell: kubectl apply -f /tmp/dashboard-adminuser.yaml
 
-# App NGINX Ingress
 #    - name: Copy Ingress App to VM
 #      copy:
 #        src: app-ingress/app-ingress.yaml
@@ -295,7 +255,7 @@
 #      become_user: vagrant
 #      shell: kubectl apply -f /tmp/app-ingress.yaml
 
-# UNCOMMENT this task if you want deployment with minikube.
+# UNCOMMENT this task if you want the normal deployment!
 #    - name: Deploy services
 #      copy:
 #        src: deployment.yaml
@@ -333,19 +293,16 @@
       become_user: vagrant
       shell: kubectl apply -f /tmp/ingress-dashboard.yaml
 
-    # Apply canary release.
-    # It is commented out because we want to install it via helm charts.
-    # For bare metal installation, you can uncomment and use this instead.
+    # Apply canary release
+    - name: Copy canary file
+      copy:
+        src: canary-release.yml
+        dest: /tmp/canary-release.yml
+        mode: '0644'
 
-#    - name: Copy canary file
-#      copy:
-#        src: canary-release.yml
-#        dest: /tmp/canary-release.yml
-#        mode: '0644'
-#
-#    - name: Apply Canary Release
-#      become_user: vagrant
-#      shell: kubectl apply -f /tmp/canary-release.yml
+    - name: Apply Canary Release
+      become_user: vagrant
+      shell: kubectl apply -f /tmp/canary-release.yml
 
     - name: Generate Kubernetes Dashboard admin token
       become: true
@@ -367,3 +324,81 @@
         src: /tmp/k8s_dashboard_admin_token.txt
         dest: "{{ playbook_dir }}/dashboard-admin-token.txt"
         flat: yes
+
+    ########## Install and Configure Grafana ##########
+
+    - name: Copy Grafana dashboard ConfigMap to VM
+      copy:
+        src: grafana-dashboard-configmap.yaml
+        dest: /tmp/grafana-dashboard-configmap.yaml
+        mode: '0644'
+
+    - name: Apply Grafana dashboard ConfigMap
+      become_user: vagrant
+      shell: |
+        kubectl apply -f /tmp/grafana-dashboard-configmap.yaml -n istio-system
+
+    - name: Create Grafana custom dashboard provider ConfigMap content
+      set_fact:
+        grafana_custom_provider_content: |
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: my-custom-dashboard-provider
+            namespace: istio-system
+            labels:
+              app.kubernetes.io/name: grafana # Consistent with Grafana's labels
+          data:
+            custom-provider.yaml: |  # This filename will be used in the mountPath
+              apiVersion: 1
+              providers:
+              - name: 'custom-sentiment-dashboards'
+                orgId: 1
+                folder: 'Sentiment Analysis'  # Folder name for your dashboard in Grafana UI
+                type: file
+                disableDeletion: false
+                editable: true
+                options:
+                  path: /var/lib/grafana/dashboards/custom  # Grafana will scan this directory for .json files
+
+    - name: Copy Grafana custom dashboard provider ConfigMap to VM
+      copy:
+        content: "{{ grafana_custom_provider_content }}"
+        dest: /tmp/my-custom-dashboard-provider.yaml
+        mode: '0644'
+
+    - name: Apply Grafana custom dashboard provider ConfigMap
+      become_user: vagrant
+      shell: |
+        kubectl apply -f /tmp/my-custom-dashboard-provider.yaml -n istio-system
+
+    - name: Patch Grafana deployment to add custom dashboard and provider
+      become_user: vagrant
+      shell: |
+        kubectl patch deployment grafana -n istio-system --type='strategic' -p='
+        spec:
+          template:
+            spec:
+              volumes:
+                - name: custom-dashboard-provider-volume
+                  configMap:
+                    name: my-custom-dashboard-provider # Name of the provider ConfigMap
+                - name: sentiment-dashboard-volume # Name for the volume for your actual dashboard
+                  configMap:
+                    name: sentiment-dashboard      # Name of your existing dashboard ConfigMap
+              containers:
+              - name: grafana # This is usually the name of the Grafana container
+                volumeMounts:
+                - name: custom-dashboard-provider-volume
+                  mountPath: /etc/grafana/provisioning/dashboards/custom-provider.yaml # Mount the provider config
+                  subPath: custom-provider.yaml   # Key from the provider ConfigMap
+                - name: sentiment-dashboard-volume
+                  mountPath: /var/lib/grafana/dashboards/custom/sentiment-dashboard.json # Mount your dashboard JSON here
+                  subPath: grafana-dashboard.json # Key from your sentiment-dashboard ConfigMap
+        '
+
+    - name: Restart Grafana deployment to load dashboard
+      become_user: vagrant
+      shell: |
+        kubectl -n istio-system rollout restart deployment grafana
+        kubectl -n istio-system rollout status deployment grafana --timeout=120s

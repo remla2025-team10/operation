@@ -13,13 +13,19 @@ data:
           {
             "builtIn": 1,
             "datasource": {
-              "type": "grafana",
-              "uid": "-- Grafana --"
+              "type": "datasource",
+              "uid": "grafana"
             },
             "enable": true,
             "hide": true,
             "iconColor": "rgba(0, 211, 255, 1)",
             "name": "Annotations & Alerts",
+            "target": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
             "type": "dashboard"
           }
         ]
@@ -27,14 +33,14 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 29,
+      "id": 10,
       "links": [],
+      "liveNow": false,
       "panels": [
         {
-          "description": "",
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
           },
           "gridPos": {
             "h": 5,
@@ -52,11 +58,15 @@ data:
             "content": "# A/B Test Dashboard \n\nThis dashboard is used to compare the performance differences between two versions of an application, helping you evaluate which version performs better.\n\nMetrics include: user interactions, conversion rates, feedback sentiment, response time, and other key indicators.",
             "mode": "markdown"
           },
-          "pluginVersion": "12.0.2",
-          "title": "",
+          "pluginVersion": "10.4.0",
+          "title": "Dashboard Introduction",
           "type": "text"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -68,7 +78,8 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "yellow",
@@ -96,7 +107,6 @@ data:
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
-            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "mean"
@@ -108,26 +118,28 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "12.0.2",
+          "pluginVersion": "10.4.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "histogram_quantile(0.95, sum(rate(performance_metrics_bucket{version=\"1\"}[5m])) by (le, operation))",
-              "legendFormat": "v1 {{`{{operation}}`}}",
+              "legendFormat": "v1 {{operation}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "histogram_quantile(0.95, sum(rate(performance_metrics_bucket{version=\"2\"}[5m])) by (le, operation))",
               "hide": false,
-              "legendFormat": "v2 {{`{{operation}}`}}",
+              "legendFormat": "v2 {{operation}}",
               "range": true,
               "refId": "B"
             }
@@ -136,6 +148,10 @@ data:
           "type": "stat"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -146,7 +162,8 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -170,7 +187,6 @@ data:
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
-            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
@@ -182,11 +198,12 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "12.0.2",
+          "pluginVersion": "10.4.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "current_users{version=\"1\"}",
@@ -196,7 +213,8 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "current_users{version=\"2\"}",
@@ -210,6 +228,10 @@ data:
           "type": "stat"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -222,7 +244,8 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "red"
+                    "color": "red",
+                    "value": null
                   },
                   {
                     "color": "yellow",
@@ -260,11 +283,12 @@ data:
             "showThresholdMarkers": true,
             "sizing": "auto"
           },
-          "pluginVersion": "12.0.2",
+          "pluginVersion": "10.4.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "conversion_metrics{metric_type=\"rate\",version=\"1\"}",
@@ -274,7 +298,8 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "conversion_metrics{metric_type=\"rate\",version=\"2\"}",
@@ -288,6 +313,10 @@ data:
           "type": "gauge"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -300,7 +329,6 @@ data:
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
-                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -331,7 +359,8 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -357,16 +386,16 @@ data:
               "showLegend": true
             },
             "tooltip": {
-              "hideZeros": false,
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "12.0.2",
+          "pluginVersion": "9.3.6",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "rate(version_interactions_total{interaction_type=\"click\",version=\"1\"}[5m])",
@@ -376,7 +405,8 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "rate(version_interactions_total{interaction_type=\"click\",version=\"2\"}[5m])",
@@ -390,6 +420,10 @@ data:
           "type": "timeseries"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -421,7 +455,8 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -456,25 +491,28 @@ data:
             "xTickLabelRotation": 0,
             "xTickLabelSpacing": 0
           },
+          "pluginVersion": "9.3.6",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "sum(feedback_metrics_total{version=\"1\"}) by (sentiment)",
-              "legendFormat": "v1 {{`{{sentiment}}`}}",
+              "legendFormat": "v1 {{sentiment}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "sum(feedback_metrics_total{version=\"2\"}) by (sentiment)",
               "hide": false,
-              "legendFormat": "v2 {{`{{sentiment}}`}}",
+              "legendFormat": "v2 {{sentiment}}",
               "range": true,
               "refId": "B"
             }
@@ -483,6 +521,10 @@ data:
           "type": "barchart"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -514,7 +556,8 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -585,7 +628,8 @@ data:
           "targets": [
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "feedback_metrics_total{feedback_type=\"yes\",version=\"1\"}",
@@ -595,7 +639,8 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "feedback_metrics_total{feedback_type=\"no\",version=\"1\"}",
@@ -606,7 +651,8 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "feedback_metrics_total{feedback_type=\"yes\",version=\"2\"}",
@@ -617,7 +663,8 @@ data:
             },
             {
               "datasource": {
-                "type": "prometheus"
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "feedback_metrics_total{feedback_type=\"no\",version=\"2\"}",
@@ -631,9 +678,8 @@ data:
           "type": "barchart"
         }
       ],
-      "preload": false,
       "refresh": "",
-      "schemaVersion": 41,
+      "schemaVersion": 39,
       "tags": [
         "ab-testing",
         "prometheus"
@@ -649,5 +695,6 @@ data:
       "timezone": "",
       "title": "A/B Testing Analysis Dashboard",
       "uid": "dep2wc4jfcuf4e",
-      "version": 1
+      "version": 2,
+      "weekStart": ""
     }

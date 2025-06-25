@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
       # Worker node basic setup
       node.vm.provider "virtualbox" do |vb|
         # VM memory settings
-        vb.memory = 5000
+        vb.memory = 4096
         vb.cpus = 4
         vb.name = "k8s-worker-#{i}"
         # Uncomment if encounter startup issues
