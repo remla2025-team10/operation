@@ -201,9 +201,41 @@ helm repo list
 ```
 Then install prometheus, you can give any prometheus release name but the default is <b>myprom</b>. If you change this be sure to also change the value of `serviceMonitor.additionalLabels.release` in `model-stack/values.yaml`.
 ```
-helm install myprom prom-repo/kube-prometheus-stack
+helm install myprom prom-repo/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace \
+  -f prometheus-values.yaml
 ```
 
+If you decide to later change something in the Prometheus stack you can update it with:
+
+```
+helm upgrade myprom prom-repo/kube-prometheus-stack \
+  --namespace monitoring  \
+  -f prometheus-values.yaml
+```
+
+#### 3. Install istio
+
+Make sure that a current version of `istioctl` is installed and accessible on your machine, this example uses version 1.26.1. Then install istio in the `istio-system` namespace.
+
+```
+istioctl install
+```
+
+Then apply the preconfigured `prometheus`, `jaeger` and `kiali` files onto you minikube cluster. These files come in a parent folder that your `istioctl` installation came with. 
+
+```
+kubectl apply -f istio-1.26.1/samples/addons/prometheus.yaml
+kubectl apply -f istio-1.26.1/samples/addons/jaeger.yaml
+kubectl apply -f istio-1.26.1/samples/addons/kiali.yaml
+```
+
+Now make sure that istio can automatically inject a sidecar to each pod in the default namespace.
+
+```
+kubectl label namespace default istio-injection=enabled --overwrite
+```
 #### 3. Deployment
 Manually create a `/mnt/shared` directory:
 ```bash
@@ -212,23 +244,45 @@ sudo mkdir -p /mnt/shared
 exit
 ```
 
-Then navigate to the model-stack directory (which stores the helm chart)
-```bash
-cd operation/model-stack
+Then set the environment variable
+``` 
+export KUBECONFIG=admin.conf
 ```
+
 Then, install the helm release
 ```
-helm install <release-name> .
+helm install <release-name> ./model-stack-fresh
 ```
 
-#### 4. Port forward
+#### 4. Access application service
+Open a minikube tunnel to expose minikube's istio-ingressgateway to the host, which functions as minikubes loadBalancer.
 
-Run the following to port forward the app service:
 ```
-kubectl port-forward svc/<release-name>-app-service 8080:8080
+minikube tunnel
 ```
 
-Now you can access the app via `http://localhost:8080/`
+Now get the external IP address from istio-gateway:
+```
+kubectl get svc istio-ingressgateway -n istio-system
+```
+
+Now add these lines to your /etc/hosts file:
+
+```
+<istio-gateway-external-ip> app.local
+<istio-gateway-external-ip> prometheus.local
+<istio-gateway-external-ip> kiali.local
+<istio-gateway-external-ip> grafana.local
+```
+
+You make sure to flush your DNS cache for previous entries for app.local and such so that these changes take place.
+
+Linux (ubuntu >= 20.00)
+```
+sudo resolvectl flush-caches
+```
+
+You can now access these files in your browser form `app.local`, `grafana.local`, `prometheus.local` and `kiali.local`.
 
 #### Access Prometheus and Grafana
 If you have confirmed that the services for prometheus and grafana are running, you can access their dashboards with the following command (tip: launch new terminals for both services because the port-forwarding command is blocking):
@@ -257,8 +311,14 @@ kubectl create secret generic smtp-password-secret \
 To set your own gmail address as the target to receive the alerts, you can do:
 
 ```bash
-helm upgrade <release-name> . \
-  --set alertmanager.receiverEmail=<your-email>
+helm upgrade <release-name> ./model-stack \
+ --set alert.receiverEmail=<your-email>
+```
+
+or alter the value of `alert.receiverEmail` in `./model-stack/values.yaml` and run:
+
+```bash
+helm upgrade <release-name> ./model-stack
 ```
 
 ## Relevant Files and Information

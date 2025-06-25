@@ -1,19 +1,29 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
-  name: team10-alerts
-  namespace: default
+  name: "{{ .Release.Name }}-alerts"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    alertmanagerConfig: {{ .Values.alert.discoveryLabel }}
 spec:
   route:
-    receiver: email-alert
+    matchers:
+    - name: release
+      value: "{{ .Release.Name }}"
+    receiver: "{{ .Release.Name }}-email-alert"
+    groupBy: ['alertname']
+    groupWait: 10s 
+    groupInterval: 1m
+    repeatInterval: 1m
+    continue: true
   receivers:
-    - name: email-alert
+    - name: "{{ .Release.Name }}-email-alert"
       emailConfigs:
         - smarthost: smtp.gmail.com:587
-          to: {{ .Values.alertmanager.receiverEmail }}
-          sendResolved: true
-          from: alerts.remla.team10@gmail.com
-          authUsername: alerts.remla.team10@gmail.com
+          to: {{ .Values.alert.receiverEmail }}
+          from: {{ .Values.alert.senderEmail }}
+          authUsername: {{ .Values.alert.senderEmail }}
           authPassword:
-            name: smtp-password-secret
-            key: smtp_password
+            name: {{ .Values.alert.smtpSecret.name }}
+            key: {{ .Values.alert.smtpSecret.key }}
+          sendResolved: True
