@@ -35,3 +35,7 @@ grafana:
   dashboardsConfigMaps:
     sentiment-dashboard: "sentiment-dashboard"
   additionalDataSources: []
+
+rateLimiting:
+  enabled: true
+  requestsPerMin: 60 # rate limit set to 60 requests per minute
