@@ -2,6 +2,21 @@
 
 This application uses a machine learning model to classify given restaurant reviews based on their sentiment, being either positive (1) or negative (0).
 
+## Repository Links
+
+This repository acts as the center of deployment for our application. All artifacts used to construct it are found in these repositories.
+
+| Repository                                                                 | Description |
+|---------------------------------------------------------------------------|-------------|
+| [operation](https://github.com/remla2025-team10/operation)               | Central infrastructure repository that provisions and deploys all services in a Kubernetes cluster. Includes artifacts to initialize a local cluster using `Vagrant` and `Ansible` for VM management. |
+| [app-service](https://github.com/remla2025-team10/app-service)           | A `Flask`-based front-end web application that interacts with users via a RESTful API and communicates with the `model-service` using `HTTP POST` requests. It allows users to interact with the Restaurant Sentiment Analysis application. |
+| [model-service](https://github.com/remla2025-team10/model-service)       | A `Flask` service exposing a REST API to serve machine learning predictions using the trained model. |
+| [model-training](https://github.com/remla2025-team10/model-training)     | Contains the `DVC` pipeline used to train, evaluate, and version the machine learning model consumed by `model-service`. |
+| [lib-version](https://github.com/remla2025-team10/lib-version)           | A utility `Python` package as a version aware component. |
+| [lib-ml](https://github.com/remla2025-team10/lib-ml)                     | A reusable `Python` library for data preprocessing, used by `model-service` to prepare input data for inference. |
+
+
+
 ## Docker Compose
 To setup and run the application using Docker Compoase, do the following:
 ```bash
@@ -116,6 +131,28 @@ You can now install our Helm chart `model-stack` for the application stack as fo
 helm install myapp ./model-stack
 ```
 
+#### Alerts
+
+To configure alerts to your email, you first need to create a secret for the sender gmail app key (for authentication). For testing purposes we provide you with the actual app key, but this will not be shared in the final version:
+```bash
+kubectl create secret generic smtp-password-secret \
+  --from-literal=smtp_password='lmyl nlxo hjdc hpzn' \
+  -n default
+```
+
+To set your own gmail address as the target to receive the alerts, you can do:
+
+```bash
+helm upgrade <release-name> ./model-stack \
+ --set alert.receiverEmail=<your-email>
+```
+
+or alter the value of `alert.receiverEmail` in `./model-stack/values.yaml` and run:
+
+```bash
+helm upgrade <release-name> ./model-stack
+```
+
 #### Local DNS Resolution
 
 On your host machine, make sure to add `app.local`, `dashboard.local`, `kiali.local`, `prometheus.local`, and `grafana.local` in your `/etc/hosts` file:
@@ -190,22 +227,23 @@ The Kubernetes cluster has the following requirements:
 - The default CPU requirement is 2 CPUs for each node.
 - You can change these in the `Vagrantfile`.
 
-## Model stack Helm chart deployment
+## Deploy on an existing kubernetes cluster
 
-A Helm chart deploying 'model-service' and 'app-service' into a local Kubernetes cluster using **Minikube**.
+The previous instructions guide you through creating and launching your own kubernetes cluster using `Vagrant`, `Ansible` and `Helm`. The following instruction illustrate how you would deploy this application on an existing kubernetes cluster, we use `Minikube` in the examples. 
 
 ### Requirements
 
-- [Minikube](https://minikube.sigs.k8s.io/)
+- [Minikube](https://minikube.sigs.k8s.io/) (Optional)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [Helm](https://helm.sh/)
+- [istioctl](https://istio.io/latest/docs/setup/install/istioctl/)
 
-### Deployment
+### 0 Start a Minikube Cluster (Optional)
 
-#### 1. Start a Minikube Cluster
+Set up the minikube cluster
 
 ```bash
-minikube start
+minikube start --memory=4096 --cpus=4 --driver=docker
 ```
 
 Enable the ingress addon:
@@ -214,18 +252,18 @@ Enable the ingress addon:
 minikube addons enable ingress
 ```
 
-#### 2. Install Prometheus
+### 1 - Install Prometheus
 Add prometheus repository to your helm repositories and update the it
-```
+```bash
 helm repo add prom-repo https://prometheus-community.github.io/helm-charts
 helm repo update
 ```
 You can make sure it's installed with
-```
+```bash
 helm repo list
 ```
-Then install prometheus, you can give any prometheus release name but the default is <b>myprom</b>. If you change this be sure to also change the value of `serviceMonitor.additionalLabels.release` in `model-stack/values.yaml`.
-```
+Then install prometheus. You can choose any prometheus release name, but the default is <b>myprom</b> and it is recommedned you use it. If you change this, **be sure to also change the value of** `serviceMonitor.additionalLabels.release` in `model-stack/values.yaml`.
+```bash 
 helm install myprom prom-repo/kube-prometheus-stack \
   --namespace monitoring \
   --create-namespace \
@@ -234,60 +272,61 @@ helm install myprom prom-repo/kube-prometheus-stack \
 
 If you decide to later change something in the Prometheus stack you can update it with:
 
-```
+```bash
 helm upgrade myprom prom-repo/kube-prometheus-stack \
   --namespace monitoring  \
   -f prometheus-values.yaml
 ```
 
-#### 3. Install istio
+### 2 - Deploy istio
 
 Make sure that a current version of `istioctl` is installed and accessible on your machine, this example uses version 1.26.1. Then install istio in the `istio-system` namespace.
 
-```
+```bash
 istioctl install
 ```
 
 Then apply the preconfigured `prometheus`, `jaeger` and `kiali` files onto you minikube cluster. These files come in a parent folder that your `istioctl` installation came with. 
 
-```
+```bash
 kubectl apply -f istio-1.26.1/samples/addons/prometheus.yaml
-kubectl apply -f istio-1.26.1/samples/addons/jaeger.yaml
 kubectl apply -f istio-1.26.1/samples/addons/kiali.yaml
 ```
 
 Now make sure that istio can automatically inject a sidecar to each pod in the default namespace.
 
-```
+```bash
 kubectl label namespace default istio-injection=enabled --overwrite
 ```
-#### 3. Deployment
-Manually create a `/mnt/shared` directory:
+### 3 - Deployment
+Manually create a `/mnt/shared` directory in the cluster, this will be used as a model-cache for the model-service:
 ```bash
 minikube ssh
 sudo mkdir -p /mnt/shared
 exit
 ```
 
-Then set the environment variable
-``` 
+Then set the environment variable.
+``` bash
 export KUBECONFIG=admin.conf
 ```
 
-Then, install the helm release
-```
-helm install <release-name> ./model-stack-fresh
+Create a secret for the Prometheus `AlertManager` to use so it can send emails, [see how to this section on how to create it](#alerts).
+
+Then install the helm release, with the release name of your choice
+```bash
+helm install <release-name> ./model-stack
 ```
 
-#### 4. Access application service
-Open a minikube tunnel to expose minikube's istio-ingressgateway to the host, which functions as minikubes loadBalancer.
+### 4 - Access application service (Optional)
+Open a minikube tunnel to expose minikube's istio-ingressgateway to the host, which functions as minikubes loadBalancer. (This also works if you have other static ingress IP's exposed to your host, but then you can skip to the last 2 steps.)
 
-```
+```bash
 minikube tunnel
 ```
 
-Now get the external IP address from istio-gateway:
-```
+Now get the external IP address from istio-gateway used by minikube:
+```bash
 kubectl get svc istio-ingressgateway -n istio-system
 ```
 
@@ -300,51 +339,21 @@ Now add these lines to your /etc/hosts file:
 <istio-gateway-external-ip> grafana.local
 ```
 
-You make sure to flush your DNS cache for previous entries for app.local and such so that these changes take place.
+Make sure to flush your DNS cache for previous entries for app.local and such so that these changes take place.
 
-Linux (ubuntu >= 20.00)
-```
+For Linux (ubuntu >= 20.00), run:
+```bash
 sudo resolvectl flush-caches
 ```
-
-You can now access these files in your browser form `app.local`, `grafana.local`, `prometheus.local` and `kiali.local`.
-
-#### Access Prometheus and Grafana
-If you have confirmed that the services for prometheus and grafana are running, you can access their dashboards with the following command (tip: launch new terminals for both services because the port-forwarding command is blocking):
-
-Prometheus on localhost:9090
-```
-kubectl port-forward svc/myprom-kube-prometheus-sta-prometheus 9090:9090
-```
-
-Grafana on localhost:8001
-```
-kubectl port-forward svc/myprom-grafana 8001:80
-```
-
-Log in with username: `admin` and password: `prom-operator`
-
-### 5. Alerts
-
-To configure alerts to your email, you first need to create a secret for the sender gmail app key (for authentication). For testing purposes we provide you with the actual app key, but this will not be shared in the final version:
-```bash
-kubectl create secret generic smtp-password-secret \
-  --from-literal=smtp_password='lmyl nlxo hjdc hpzn' \
-  -n default
-```
-
-To set your own gmail address as the target to receive the alerts, you can do:
+For macOS, run:
 
 ```bash
-helm upgrade <release-name> ./model-stack \
- --set alert.receiverEmail=<your-email>
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 ```
 
-or alter the value of `alert.receiverEmail` in `./model-stack/values.yaml` and run:
+You can now access the dashboards in your browser form `app.local`, `grafana.local`, `prometheus.local` and `kiali.local`.
 
-```bash
-helm upgrade <release-name> ./model-stack
-```
+You can log into Grafana with username: `admin` and password: `prom-operator`
 
 ## Relevant Files and Information
 The application is structured in the following way:
