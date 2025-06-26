@@ -156,8 +156,8 @@
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/44 (A5)
 
 -- Koen --
-<br> Created PR:
-<br> Approved PR:
+<br> Created PR: https://github.com/remla2025-team10/model-service/pull/4 (A1), https://github.com/remla2025-team10/model-training/pull/12 (A1), 
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/44 (A5)
 
 -- Maosheng --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/45 (A3)
