@@ -16,7 +16,7 @@ A proposed solution is to use a **Chart Release Action** in a dedicated `helm-ch
 
 ### Design Overview
 
-Firstly, we shall define the dedicated Git repository under out organization, named `helm-charts`. This repo will manage the Helm charts for our application. The sources of all the charts will be placed under the main branch, while the charts themselves would be placed under a `/charts` directory at the top-level of the directory tree. On the main branch, we create a GitHub Actions workflow file: (`.github/workflows/release.yml`), which will use the `@helm/chart-releaser-action` configuration to turn our project into a self-hosted Helm chart repository.
+Firstly, we shall define the dedicated Git repository under our organization, named `helm-charts`. This repo will manage the Helm charts for our application. The sources of all the charts will be placed under the main branch, while the charts themselves would be placed under a `/charts` directory at the top-level of the directory tree. On the main branch, we create a GitHub Actions workflow file: (`.github/workflows/release.yml`), which will use the `@helm/chart-releaser-action` configuration to turn our project into a self-hosted Helm chart repository.
 
 ```
 helm-charts/
