@@ -1,13 +1,17 @@
 modelService:
   name: model-service
   image: ghcr.io/remla2025-team10/model-service:latest
+  canaryImage: ghcr.io/remla2025-team10/model-service:v0.0.5
   port: 3000
+  replicas: 1
   pvSize: 3Gi
 
 appService:
   name: app-service
   image: ghcr.io/remla2025-team10/app-service:latest
+  canaryImage: ghcr.io/remla2025-team10/app-service:beta
   port: 8080
+  replicas: 1
 
 ingress:
   enabled: true
@@ -24,7 +28,22 @@ serviceMonitor:
 
 prometheusRule:
   additionalLabels:
-    release: myprom
+    release: "myprom"
 
-alertmanager:
-  receiverEmail: alerts.remla.team10@gmail.com
+grafana:
+  dashboardsConfigMaps:
+    sentiment-dashboard: "sentiment-dashboard"
+  additionalDataSources: []
+
+rateLimiting:
+  enabled: true
+  requestsPerMin: 250 # rate limit set to 250 requests per minute
+
+alert:
+  enabled: true
+  discoveryLabel: "model-stack"
+  receiverEmail: "alerts.remla.team10@gmail.com"
+  senderEmail: "alerts.remla.team10@gmail.com"
+  smtpSecret:
+    name: "smtp-password-secret"
+    key: "smtp_password"

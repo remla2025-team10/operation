@@ -41,11 +41,10 @@
                 label: grafana_dashboard
                 labelValue: "1"
 
-
     ########## Install MetalLB ##########
     - name: Copy MetalLB to VM
       copy:
-        src: ansible/files/metallb-native.yaml
+        src: files/metallb-native.yaml
         dest: /tmp/metallb-native.yaml
         mode: '0644'
 
@@ -152,7 +151,6 @@
         dest: "/tmp/istio-{{ istio_version }}.tar.gz"
         mode: '0644'
 
-
     - name: Extract Istio archive
       unarchive:
         src: "/tmp/istio-{{ istio_version }}.tar.gz"
@@ -200,11 +198,6 @@
         istioctl install -f /tmp/istio-operator-static-ip.yaml -y
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
-
-#    - name: Install Istio with default profile
-#      command: istioctl install --set profile=default -y
-#      environment:
-#        KUBECONFIG: /etc/kubernetes/admin.conf
 
     - name: Wait for istio-system pods to be ready
       shell: |
@@ -284,29 +277,6 @@
       become_user: vagrant
       shell: kubectl apply -f /tmp/dashboard-adminuser.yaml
 
-# App NGINX Ingress
-#    - name: Copy Ingress App to VM
-#      copy:
-#        src: app-ingress/app-ingress.yaml
-#        dest: /tmp/app-ingress.yaml
-#        mode: '0644'
-#
-#    - name: Apply Ingress App
-#      become_user: vagrant
-#      shell: kubectl apply -f /tmp/app-ingress.yaml
-
-# UNCOMMENT this task if you want deployment with minikube.
-#    - name: Deploy services
-#      copy:
-#        src: deployment.yaml
-#        dest: /tmp/deployment.yaml
-#        mode: '0644'
-#
-#    - name: Apply Deployment
-#      become_user: vagrant
-#      shell: kubectl apply -f /tmp/deployment.yaml
-
-
     ######### Install Cert-Manager ##########
     - name: Install cert-manager with kubeconfig
       command: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
@@ -332,20 +302,6 @@
     - name: Apply Ingress Dashboard
       become_user: vagrant
       shell: kubectl apply -f /tmp/ingress-dashboard.yaml
-
-    # Apply canary release.
-    # It is commented out because we want to install it via helm charts.
-    # For bare metal installation, you can uncomment and use this instead.
-
-#    - name: Copy canary file
-#      copy:
-#        src: canary-release.yml
-#        dest: /tmp/canary-release.yml
-#        mode: '0644'
-#
-#    - name: Apply Canary Release
-#      become_user: vagrant
-#      shell: kubectl apply -f /tmp/canary-release.yml
 
     - name: Generate Kubernetes Dashboard admin token
       become: true

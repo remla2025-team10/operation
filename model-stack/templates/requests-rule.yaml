@@ -1,10 +1,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: request-rate-alert
-  namespace: default
+  name: {{ .Release.Name }}-request-rate-alert
+  namespace: {{ .Release.Namespace }}
   labels:
-    release: myprom
+    release: {{ .Values.prometheusRule.additionalLabels.release }}
 spec:
   groups:
     - name: request-rate.rules
@@ -14,6 +14,17 @@ spec:
           for: 2m
           labels:
             severity: warning
-            namespace: default
+            release: "{{ .Release.Name }}"
+            namespace: "{{ .Release.Namespace }}"
           annotations:
             summary: ">15 requests per minute for 2 minutes"
+        # - alert: ApplicationTestAlert
+        #   expr: sum(flask_http_request_total) > 130
+        #   for: 0s
+        #   labels:
+        #     severity: critical
+        #     release: "{{ .Release.Name }}"
+        #     namespace: "{{ .Release.Namespace }}"
+        #   annotations:
+        #     summary: "Test alert triggered for {{ .Release.Name }}"
+        #     description: "This is a test to confirm the alerting pipeline is working correctly for the {{ .Release.Name }} application. Let's see if it works finally!"

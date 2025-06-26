@@ -1,5 +1,5 @@
 # Configurable worker count
-WORKER_COUNT = ENV['WORKER_COUNT'] ? ENV['WORKER_COUNT'].to_i : 1
+WORKER_COUNT = ENV['WORKER_COUNT'] ? ENV['WORKER_COUNT'].to_i : 2
 
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-24.04"
@@ -70,7 +70,7 @@ Vagrant.configure("2") do |config|
 
         # active controller node
         f.puts "[ctrl]"
-        f.puts "ctrl=92.168.56.100"
+        f.puts "ctrl=192.168.56.100"
 
         # active worker nodes (loop through each one)
         f.puts "\n[nodes]"
