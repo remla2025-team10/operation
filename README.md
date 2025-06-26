@@ -216,9 +216,11 @@ rateLimiting:
 
 To test it, go to your main terminal and try the following script.
 ```bash
-for i in {1..250}; do curl -I -H "Host: app.local" app.local; sleep 0.1; done
+for i in {1..300}; do curl -I -H "Host: app.local" app.local; sleep 0.1; done
 ```
  Once the local rate limit has been hit, you will receive `429` status codes. You can adjust the loop to match the rate-limit value you configured in the `values.yaml` file.
+
+ (Note: It is recommended to disable rate limiting in `model-stack/values.yaml` to test the PrometheusRule in `requests-rule.yaml`)
 
 ### System Requirements
 
