@@ -3,7 +3,8 @@ modelService:
   image: ghcr.io/remla2025-team10/model-service:latest
   canaryImage: ghcr.io/remla2025-team10/model-service:v0.0.5
   port: 3000
-  replicas: 1
+  replicas: 
+  canaryReplicas: 1
   pvSize: 3Gi
 
 appService:
@@ -12,6 +13,7 @@ appService:
   canaryImage: ghcr.io/remla2025-team10/app-service:beta
   port: 8080
   replicas: 1
+  canaryReplicas: 1
 
 ingress:
   enabled: true
