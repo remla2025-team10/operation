@@ -37,6 +37,8 @@ This repository includes configuration for deploying a Kubernetes cluster using 
 
 The cluster uses Flannel for pod networking and includes Helm for package management.
 
+We use SSH to access the VMs, so make sure to add your public SSH key (ends with `.pub`) to the `ansible/ssh_keys/` directory.
+
 ### Vagrant Setup
 
 Make sure you have [Vagrant](https://www.vagrantup.com/) and [Ansible](https://www.ansible.com/) installed.
@@ -89,14 +91,28 @@ You can run the following command from the host to finalize the cluster setup:
 
 
 ```bash
-ansible-playbook -u vagrant -i 192.168.56.100, finalize.yml
+ansible-playbook -u vagrant -i 192.168.56.100, ansible/finalize.yml
 ```
 
 ### Install application with Helm
-After the cluster setup is done, you can install our Helm chart for the application stack as follows:
+
+First, ensure that the `KUBECONFIG` global variable is configured to `admin.conf`:
 
 ```bash
 export KUBECONFIG=admin.conf
+```
+
+To enable **Alerts**, make sure to reconfigure the myprom installation:
+
+```bash
+helm upgrade myprom prom-repo/kube-prometheus-stack \
+  --namespace monitoring  \
+  -f prometheus-values.yaml
+```
+
+You can now install our Helm chart `model-stack` for the application stack as follows:
+
+```bash
 helm install myapp ./model-stack
 ```
 
@@ -128,12 +144,17 @@ sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 For Linux, run:
 
 ```bash
-sudo systemd-resolve --flush-caches
+sudo resolvectl flush-caches
 ```
 
-When everything is complete, the Kubernetes Dashboard should be accessible at [dashboard.local](dashboard.local), our app should be accessible at [app.local](app.local), the kiali dashboard should be accessible at [kiali.local](kiali.local), the grafana dashboard should be accessible at [grafana.local](grafana.local), and the prometheus dashboard should be accessible at [prometheus.local](prometheus.local).
+#### The app is now ready!
 
-To log in, generate an admin token by running this command on the control node (`vagrant ssh ctrl`):
+When everything is complete, you can access the app at [app.local](app.local), the kiali dashboard should be accessible at [kiali.local](kiali.local), and the prometheus dashboard should be accessible at [prometheus.local](prometheus.local).
+
+
+The grafana dashboard should be accessible at [grafana.local](grafana.local), and you can log in with username: `admin` and password: `prom-operator`.
+
+The Kubernetes Dashboard should be accessible at [dashboard.local](dashboard.local). To log in, generate an admin token by running this command on the control node (`vagrant ssh ctrl`):
 ```bash
 kubectl -n kubernetes-dashboard create token admin-user
 ```
@@ -148,7 +169,7 @@ You can best test this via Postman, as if you set the header `x-user` and make t
 
 #### Rate-limiting
 
-With istio installed, rate-limiting is implemented using `EnvoyFilter`. The rate limiting value can be configured in the `model-stack/value.yaml` file:
+With istio installed, rate-limiting is implemented using `EnvoyFilter`. The rate limiting value can be configured in the `model-stack/values.yaml` file:
 
 ```
 rateLimiting:
@@ -160,8 +181,7 @@ To test it, go to your main terminal and try the following script.
 ```bash
 for i in {1..250}; do curl -I -H "Host: app.local" app.local; sleep 0.1; done
 ```
- Once the local rate limit has been hit, you will receive `429` status codes.
-
+ Once the local rate limit has been hit, you will receive `429` status codes. You can adjust the loop to match the rate-limit value you configured in the `values.yaml` file.
 
 ### System Requirements
 
@@ -302,7 +322,7 @@ Grafana on localhost:8001
 kubectl port-forward svc/myprom-grafana 8001:80
 ```
 
-Log in wiht username: `admin` and password: `prom-operator`
+Log in with username: `admin` and password: `prom-operator`
 
 ### 5. Alerts
 
@@ -331,73 +351,43 @@ The application is structured in the following way:
 
 **Operation Repository** is the starting point of the application and contains the files required to run the application, as explained above
 
-- `Vagrantfile`: Defines the virtual machines configuration.
+- `Vagrantfile`: Defines the VM configurations.
 - `ansible/`: Contains Ansible playbooks for automated setup and configuration of the Kubernetes cluster
     - `files/`:
-        - `kube-flannel.yml`
-        - `metallb-native.yaml`
+        - `kube-flannel.yml`: KB pod network config file for deploying Flannel.
+        - `metallb-native.yaml`: Config manifest for deploying MetalLB.
+    - `kubernetes dashboard/`
+        - `dashboard-adminuser.yaml`: Define ServiceAccount and CluterRoleBinding for a KB dashboard admin user.
+        - `ingress-dashboard`: Ingress configuration for exposing the KB dashboard.
     - `general.yaml`: Configures all VMs with necessary prerequisites for Kubernetes, including required system settings.
     - `ctrl.yaml`: Initializes the Kubernetes cluster on the control node.
     - `node.yaml`: Configures worker nodes and joins them to the Kubernetes cluster.
-- `finalize.yaml`: Installed MetalLB, NGinx Ingress, Dashboard, and Istio service mesh (+ addons) for load balancing and routing.
+    - `finalize.yml`: Installed MetalLB, NGinx Ingress, Dashboard, and Istio service mesh (+ addons) for load balancing and routing.
 - `docs/`
     - `continuous-experimentation.md`: A/B testing experiment documentation.
     - `deployment.md`: Deployment description details.
     - `extension.md`: Extension proposal.
-- `kubernetes dashboard/`
-    - `dashboard-adminuser.yaml`: Define ServiceAccount and CluterRoleBinding for a KB dashboard admin user.
-    - `ingress-dashboard`: Ingress configuration for exposing the KB dashboard.
 - `model-stack/`: Contains the Helm chart for deploying the application to Kubernetes
     - `Chart.yaml`: Metadata about the Helm chart
     - `values.yaml`: Default configuration values for the Helm chart
     - `templates/`
         - `_helpers.tpl`: Helper templates for the Helm chart
         - `alertmanager-config.yaml`: AlertManager configuration for notification settings.
-        - `app-deployment.yaml`:
-        - `destinationrules.yaml`:
-        - `istio-rate-limiting.yaml`:
-        - `isitiogateway.yaml`:
-        - `model-deployment.yaml`:
-        - `model-pv.yml`:
-        - `model-pvc.yml`:
+        - `app-deployment.yaml`: Creates two deployments for app-service. One for stable (v1) and one for canary (v2).
+        - `destinationrules.yaml`: Defines Istio DestinationRules for model-service and app-service.
+        - `istio-rate-limiting.yaml`: EnvoyFilter to apply local rate limiting.
+        - `isitiogateway.yaml`: Istio Gateway resource to expose HTTP traffic to the cluster for external access.
+        - `model-deployment.yaml`: Creates two deployments for model-service. One for stable (v1) and one for canary (v2).
+        - `model-pv.yml`: PersistentVolume for storing model files. 
+        - `model-pvc.yml`: PersistentVolumeClaim for storing model files.
         - `requests-rule.yaml`: Custom Prometheus alerting rule.
-        - `servicemonitor.yaml`:
-        - `services.yaml`:
-        - `virtualservices.yaml`:
-
-**App Service Repository** holds the relevant frontend and backend code for the application
-- `app/models/model_handler.py` makes a post request to the model-service to get a sentiment prediction
-- `app/routes/__init__.py` defines the routes used by the backend application
-- `app/__init__.py` holds the overall backend application code
-- `app/templates/index.html` defines the frontend code of the application
-
-**Model Service Repository**
-- `model-service/download_models.py` is used to download the classifier (and vectorizer) model used for the prediction
-- `model-service/app.py` contains the Flask wrapper for the model, with an endpoint that can be accessed by the app-service to request a prediction for a given review
-
-**Lib-ml Repository**
-- `preprocess_sentiment_analysis/preprocess.py` is used to preprocess a given dataset by cleaning the text (removing non-alphabetical characters, converting all words to lowercase, removing stopwords, and Porter stemming). It saves the results into a processed CSV file.
-
-**Lib-version**
-- `src/lib_version/version_awerenes.py` is contains the package code used to retrieve the packages version at runtime.
-- `src/lib_version/VERSION` is the config file that contains the build version. This file is used at build time to determine the versioning.
-
-**Model training**
-- `data/`: The folder containing all the data files
-    - `raw/`: Original raw data dumps
-    - `processed/`: The processed data directly used by the model
-- `models/`: Containes the models which have already been trained
-- `restaurant_model_training/`: The main package (module) of this project
-    - `config.py`: Contains the configurations such as default values and paths
-    - `dataset.py`: Logic for loading and preprocessing the data
-    - `features.py`: Logic for creating BOW features
-    - `modeling/`: Module containing logic for model training (`train.py`) and predicting (`predict.py`)
-- `tests/`: The test files for the model
-    - `test_data_features.py`: Tests for data and features
-    - `test_infrastructure.py`: Tests for infrastructure
-    - `test_model_development.py`: Tests for model training, evaluation, robustness
-    - `test_monitoring.py`: Tests for model monitoring
-- `requirements.txt`: The project dependencies
+        - `servicemonitor.yaml`: ServiceMonitor for prometheus to scrape metrics from app-service.
+        - `services.yaml`: KB services for model-service and app-service.
+        - `virtualservices.yaml`: Istio VirtualServices for traffic management.
+        - `monitoring/`: directory with ConfigMaps for Grafana dashboards.
+            - `a3-dashboard-configmap`
+            - `ab-test-dashboard-configmap`
+- `docker-compose.yml`: docker-compose configuration file
 
 ## Repository Links
 For convenience, we list links to the available repositories used in this project:
@@ -407,62 +397,3 @@ For convenience, we list links to the available repositories used in this projec
 - [model-training](https://github.com/remla2025-team10/model-training)
 - [lib-version](https://github.com/remla2025-team10/lib-version)
 - [lib-ml](https://github.com/remla2025-team10/lib-ml)
-
-## Progress Log
-### Assignment 1
-#### What was done
-All core components of the assignment have been implemented.
-
-- **Lib-ml** provides a preprocessing library for cleaning up the dataset text to be used in the sentiment analysis.
-- **Model-training** Trains the restaurant sentiment analysis model and publishes it to releases for access.
-- **Model-service** applies preprocessing and uses the model to return a prediction.
-- **Lib-version** provides a simple library that can produce its build version upon request.
-- **App-service** Build the frontend and backend for the project, call model-service api, and use lib-version util.
-- **Operation** builds up the containers for the model-service and app-service and hides model-service from the host (only accessible by app-service).
-
-#### What is missing / needs improvement
-- **Automated versioning** is implemented only in the lib-version repository on pushes with a release or version tag. It creates releases on main with the correct stable version tag, also pre-release commits and tags automatically on main. Though these pre-release tags are not sub-ordered for now.
-
-### Assignment 2
-#### What was done
-All core components of the assignment have been implemented.
-
-- **1.1 Basic VM Setup** Configured VMs and networking for Kubernetes. See `general.yaml`.
-- **1.2 Setting up the Kubernetes Controller** Initialized the cluster and set up kubectl, Flannel, and Helm on the controller node. See `ctrl.yaml`.
-- **1.3 Setting up Kubernetes Workers** Joined worker nodes to the cluster using a token from the controller. See `node.yaml`.
-- **1.4 Finalizing the Cluster Setup** Installed MetalLB, NGinx Ingress, Dashboard, for load balancing and routing. See `finalization.yml`.
-
-### Assignment 3
-#### What was done
-
-- **1.1 Migration from Docker Compose to Kubernetes** Migrated from `docker-compose` to Kubernetes using `Minikube`. Additionally deployed using `k8s`. Implemented a `helm` chart in the `model-stack` directory.
-- **1.2 Monitoring** Added `Prometheus` APIs in `app-service`, configured `Prometheus` with a `ServiceMonitor` to automatically collect app-specific metrics for monitoring user interactions and model performance, integrated `AlertManager` to send email alerts for high request rates, and created a `Grafana` dashboard with visualizations for all metrics.
-
-### What needs to be done
-Prometheus dashboard not configured properly, so the actual prometheus rule doesn't fire, alerts should still work
-
-### Assignment 4
-#### What was done
-
-- **Cookiecutter template** Refactored `model-training` to follow a cookie-cutter template.
-- **Automated tests** Implemented tests following the ML-Test score methodology, all in the `/test` folder in `model-training`.
-- **DVC pipeline** Implemented a DVC pipeline using gdrive remote storage in `model-training`.
-- **pylint confugration** `model-training` implements pylint configuration within the workflow.
-
-### What needs to be done
-Mutamorphic testing.
-
-## Progress Log - Assignment 5
-### What was done
-
-- **Traffic Management** Added istio gateway: Kubernetes dashboard, kiali, prometheus, app are all accessible.
-- **Sticky Sessions** Added sticky sessions for user routing, so users with the correct header are always redirected to the experimental (v2) version of the app, while others never see it (v1)
-- **Continuous Experimentation** Added a new feature: random gifs to the sentiment analysis with a metrics route.
-- **Rate limiting** A (base) Isitio envoyfilter has been implemented that should locally rate limits to 10 requests a minute. For now, must be manually applied with `kubectl` once the app is up.
-- **Documentation** Description and model are provided in `/docs`.
-
-### What is missing / needs improvement
-
-- Documentation is incomplete. Needs `extension.md`.
-- Dashboard access must be configured properly.
-- Rate limiting needs to be hotfixed.
