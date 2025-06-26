@@ -16,7 +16,6 @@ This repository acts as the center of deployment for our application. All artifa
 | [lib-ml](https://github.com/remla2025-team10/lib-ml)                     | A reusable `Python` library for data preprocessing, used by `model-service` to prepare input data for inference. |
 
 
-
 ## Docker Compose
 To setup and run the application using Docker Compoase, do the following:
 ```bash
@@ -216,9 +215,11 @@ rateLimiting:
 
 To test it, go to your main terminal and try the following script.
 ```bash
-for i in {1..250}; do curl -I -H "Host: app.local" app.local; sleep 0.1; done
+for i in {1..300}; do curl -I -H "Host: app.local" app.local; sleep 0.01; done
 ```
- Once the local rate limit has been hit, you will receive `429` status codes. You can adjust the loop to match the rate-limit value you configured in the `values.yaml` file.
+ Once the local rate limit has been hit, you will receive `429` status codes. You can adjust the loop to match the rate-limit value you configured in the `values.yaml` file. The `tokens_per_fill` value is the same as `requestsPerMin`, so it will reset after a minute once the rate limit is hit (i.e. wait for a minute after using this command).
+
+ (Note: It is recommended to disable rate limiting in `model-stack/values.yaml` to test the PrometheusRule in `requests-rule.yaml`)
 
 ### System Requirements
 
@@ -238,7 +239,7 @@ The previous instructions guide you through creating and launching your own kube
 - [Helm](https://helm.sh/)
 - [istioctl](https://istio.io/latest/docs/setup/install/istioctl/)
 
-### 0 Start a Minikube Cluster (Optional)
+### 0 - Start a Minikube Cluster (Optional)
 
 Set up the minikube cluster
 
@@ -397,12 +398,3 @@ The application is structured in the following way:
             - `a3-dashboard-configmap`
             - `ab-test-dashboard-configmap`
 - `docker-compose.yml`: docker-compose configuration file
-
-## Repository Links
-For convenience, we list links to the available repositories used in this project:
-- [operation](https://github.com/remla2025-team10/operation)
-- [app-service](https://github.com/remla2025-team10/app-service)
-- [model-service](https://github.com/remla2025-team10/model-service)
-- [model-training](https://github.com/remla2025-team10/model-training)
-- [lib-version](https://github.com/remla2025-team10/lib-version)
-- [lib-ml](https://github.com/remla2025-team10/lib-ml)

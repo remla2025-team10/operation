@@ -15,7 +15,7 @@ More specifically, the project deployment process consists of the following:
     - `model-service`: wrapper service for the released ML model, using REST API to expose the model to the other microservice components.
 - **Kubernetes Cluster** provisioned with Vagrant and Ansible, and orchestrates all workloads and resources.
 - **Istio Service Mesh** Manages traffic routing and observability. It is the primary gateway for the user through an external IP exposed by MetalLB.
-- **Monitoring Stack**: Enables monitoring with Prometheus, providing visualizations with Grafana, and traffic observability with Kiali and Jaeger.
+- **Monitoring Stack**: Enables monitoring with Prometheus, providing visualizations with Grafana, and traffic observability with Kiali.
 - **Local Docker Compose**: Local deployment possibility with Docker Compose
 
 ## 2. Deployment Structure
@@ -33,7 +33,7 @@ Istio is installed as the service mesh for our cluster. The deployment is define
 - **Dynamic Routing:** Makes use of Istio VirtualServices and DestinationRules to enable routing, including:
     - **A/B Testing:** A user is routed to either the `v1` (stable) or `v2` (canary) version of the app according to a 90/10 split.
     - **Sticky sessions:**  If the initial request contains the HTTP header `x-user`, the user is assigned a cookie indicating the version they were routed to. This ensures consistency on subsequent requests.
-- **Observability:** Integration with Kiali (service mesh visualization) and Jaeger (distributed tracing).
+- **Observability:** Integration with Kiali (service mesh visualization).
 
 ### Monitoring Stack
 
