@@ -213,9 +213,9 @@ rateLimiting:
   requestsPerMin: 250 # rate limit requests per minute.
 ```
 
-To test it, go to your main terminal and try the following script.
+Feel free to configure this number to what is deemed appropriate. To test it, go to your main terminal and try the following script:
 ```bash
-for i in {1..300}; do curl -I -H "Host: app.local" app.local; sleep 0.01; done
+for i in {1..<request-limit>}; do curl -I -H "Host: app.local" app.local; sleep 0.01; done
 ```
  Once the local rate limit has been hit, you will receive `429` status codes. You can adjust the loop to match the rate-limit value you configured in the `values.yaml` file. The `tokens_per_fill` value is the same as `requestsPerMin`, so it will reset after a minute once the rate limit is hit (i.e. wait for a minute after using this command).
 
