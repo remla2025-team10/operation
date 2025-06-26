@@ -155,7 +155,7 @@
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/44 (A5)
 
 -- Koen --
-<br> Created PR: https://github.com/remla2025-team10/model-service/pull/4 (A1), https://github.com/remla2025-team10/model-training/pull/12 (A1), 
+<br> Created PR: https://github.com/remla2025-team10/model-service/pull/4 (A1), https://github.com/remla2025-team10/model-training/pull/12 (A1),
 <br> Approved PR: https://github.com/remla2025-team10/operation/pull/44 (A5)
 
 -- Maosheng --
@@ -169,7 +169,7 @@
 # Week 10
 -- Boris --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/49 (A5)
-<br> Approved PR: 
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/47 (A3), https://github.com/remla2025-team10/operation/pull/50 (A5)
 
 -- Sahar Marossi --
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/50 (A5)
@@ -177,11 +177,11 @@
 
 -- Koen --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/47 (A3)
-<br> Approved PR: 
+<br> Approved PR:
 
 -- Maosheng --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/45 (A3)
-<br> Approved PR: 
+<br> Approved PR:
 
 -- Haoran --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/46 (A3), https://github.com/remla2025-team10/app-service/pull/17 (A3)
