@@ -20,7 +20,6 @@
 <br>Approved PR: https://github.com/remla2025-team10/model-service/pull/2, https://github.com/remla2025-team10/operation/pull/1 (A1)
 
 # Week 3
-
 -- Boris: --
 <br>Created PR: https://github.com/remla2025-team10/operation/pull/6 (A2)
 <br>Approved PR: https://github.com/remla2025-team10/operation/pull/3, https://github.com/remla2025-team10/operation/pull/4, https://github.com/remla2025-team10/operation/pull/5, https://github.com/remla2025-team10/operation/pull/8 (A2)
@@ -164,26 +163,26 @@
 <br> Approved PR: https://github.com/remla2025-team10/operation/pull/40 (A2)
 
 -- Haoran --
-<br> Created PR:
-<br> Approved PR:
+<br> Created PR: https://github.com/remla2025-team10/app-service/pull/14 (A1)
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/45 (A3)
 
 # Week 10
 -- Boris --
-<br> Created PR:
+<br> Created PR: https://github.com/remla2025-team10/operation/pull/49 (A5)
 <br> Approved PR: 
 
 -- Sahar Marossi --
-<br>Created PR:
-<br>Approved PR:
+<br>Created PR: https://github.com/remla2025-team10/operation/pull/50 (A5)
+<br>Approved PR: https://github.com/remla2025-team10/operation/pull/46 (A3), https://github.com/remla2025-team10/operation/pull/49 (A5)
 
 -- Koen --
-<br> Created PR: https://github.com/remla2025-team10/operation/pull/47
+<br> Created PR: https://github.com/remla2025-team10/operation/pull/47 (A3)
 <br> Approved PR: 
 
 -- Maosheng --
-<br> Created PR: 
+<br> Created PR: https://github.com/remla2025-team10/operation/pull/45 (A3)
 <br> Approved PR: 
 
 -- Haoran --
-<br> Created PR:
-<br> Approved PR:
+<br> Created PR: https://github.com/remla2025-team10/operation/pull/46 (A3), https://github.com/remla2025-team10/app-service/pull/17 (A3)
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/45 (A3)
