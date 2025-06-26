@@ -7,7 +7,7 @@ The application follows a microservice architecture and is deployed on a Kuberne
 
 ![Deployment Architecture Diagram](pics/Deployment-Diagram.png)
 
-**Figure 1:** High level overview of the deployed (relevant) resources. This includes provisioning, KB cluster, and KB deployment, alongside Monitoring and the local Docker-Compose option.
+**Figure 1:** High-level overview of the deployed (relevant) resources. This includes provisioning, KB cluster, and KB deployment, alongside Monitoring and the local Docker-Compose option.
 
 More specifically, the project deployment process consists of the following:
 - **Application Services** The application follows a microservice architecture with the following services:
@@ -16,7 +16,7 @@ More specifically, the project deployment process consists of the following:
 - **Kubernetes Cluster** provisioned with Vagrant and Ansible, and orchestrates all workloads and resources.
 - **Istio Service Mesh** Manages traffic routing and observability. It is the primary gateway for the user through an external IP exposed by MetalLB.
 - **Monitoring Stack**: Enables monitoring with Prometheus, providing visualizations with Grafana, and traffic observability with Kiali.
-- **Local Docker Compose**: Local deployment possibility with Docker Compose
+- **Local Docker Compose**: Local deployment possibility with Docker Compose.
 
 ## 2. Deployment Structure
 

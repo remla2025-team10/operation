@@ -67,7 +67,7 @@ The following metrics will be collected between two conditions:
 * Time (minutes) taken for deployment.
 * Number of manual commands executed.
 * Number of errors (error rate).
-* Qualitative feedback from. contributors.
+* Qualitative feedback from contributors.
 
 ### Method:
 
@@ -82,7 +82,7 @@ We can compare the baseline vs the automated conditions.
     - Configure the `operation` repository to automatically pull and deploy new versions.
     - Perform N release iterations using the automated workflow.
     - Record quantitative and qualitative metrics.
-3. **Analysis**: Compare the metrics between the conditions (average deployment time, command count, error rate). Gather feedback from contributors on perceived effort/efficiency. Document differences in a table and visualize improvement (e.g., bar chart)
+3. **Analysis**: Compare the metrics between the conditions (average deployment time, command count, error rate). Gather feedback from contributors on perceived effort/efficiency. Document differences in a table and visualize improvement (e.g., bar chart).
 
 ### Success criteria (Expected Outcome):
 - Reduced deployment errors and time (~30% reduction).
