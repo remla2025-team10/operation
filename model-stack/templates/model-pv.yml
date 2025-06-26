@@ -10,4 +10,18 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
   hostPath:
-    path: /mnt/shared/models
+    path: /mnt/shared/{{ .Release.Name }}-models
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-canary-model-pv
+spec:
+  capacity:
+    storage: {{ .Values.modelService.pvSize }}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /mnt/shared/{{ .Release.Name }}-canary-models

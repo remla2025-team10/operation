@@ -10,3 +10,16 @@ spec:
     requests:
       storage: {{ .Values.modelService.pvSize }}
   volumeName: {{ .Release.Name }}-model-pv
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-canary-model-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.modelService.pvSize }}
+  volumeName: {{ .Release.Name }}-canary-model-pv
