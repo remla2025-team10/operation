@@ -16,7 +16,6 @@ This repository acts as the center of deployment for our application. All artifa
 | [lib-ml](https://github.com/remla2025-team10/lib-ml)                     | A reusable `Python` library for data preprocessing, used by `model-service` to prepare input data for inference. |
 
 
-
 ## Docker Compose
 To setup and run the application using Docker Compoase, do the following:
 ```bash
@@ -240,7 +239,7 @@ The previous instructions guide you through creating and launching your own kube
 - [Helm](https://helm.sh/)
 - [istioctl](https://istio.io/latest/docs/setup/install/istioctl/)
 
-### 0 Start a Minikube Cluster (Optional)
+### 0 - Start a Minikube Cluster (Optional)
 
 Set up the minikube cluster
 
@@ -399,12 +398,3 @@ The application is structured in the following way:
             - `a3-dashboard-configmap`
             - `ab-test-dashboard-configmap`
 - `docker-compose.yml`: docker-compose configuration file
-
-## Repository Links
-For convenience, we list links to the available repositories used in this project:
-- [operation](https://github.com/remla2025-team10/operation)
-- [app-service](https://github.com/remla2025-team10/app-service)
-- [model-service](https://github.com/remla2025-team10/model-service)
-- [model-training](https://github.com/remla2025-team10/model-training)
-- [lib-version](https://github.com/remla2025-team10/lib-version)
-- [lib-ml](https://github.com/remla2025-team10/lib-ml)
