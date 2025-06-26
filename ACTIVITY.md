@@ -166,3 +166,24 @@
 -- Haoran --
 <br> Created PR:
 <br> Approved PR:
+
+# Week 10
+-- Boris --
+<br> Created PR:
+<br> Approved PR: 
+
+-- Sahar Marossi --
+<br>Created PR:
+<br>Approved PR:
+
+-- Koen --
+<br> Created PR: https://github.com/remla2025-team10/operation/pull/47
+<br> Approved PR: 
+
+-- Maosheng --
+<br> Created PR: 
+<br> Approved PR: 
+
+-- Haoran --
+<br> Created PR:
+<br> Approved PR:
