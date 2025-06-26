@@ -181,7 +181,7 @@
 
 -- Maosheng --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/45 (A3)
-<br> Approved PR:
+<br> Approved PR: https://github.com/remla2025-team10/operation/pull/52 (A3)
 
 -- Haoran --
 <br> Created PR: https://github.com/remla2025-team10/operation/pull/46 (A3), https://github.com/remla2025-team10/app-service/pull/17 (A3)
