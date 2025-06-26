@@ -29,7 +29,7 @@ spec:
               stat_prefix: http_local_rate_limiter
               token_bucket: # rate limit (local) configured in values.yaml
                 max_tokens: {{ .Values.rateLimiting.requestsPerMin }}
-                tokens_per_fill: 10
+                tokens_per_fill: {{ .Values.rateLimiting.requestsPerMin }} # set as the same as max_tokens for the sake of testing
                 fill_interval: 60s # every minute
               filter_enabled:
                 runtime_key: local_rate_limit
