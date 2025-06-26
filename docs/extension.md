@@ -16,7 +16,7 @@ A proposed solution is to use a **Chart Release Action** in a dedicated `helm-ch
 
 ### Design Overview
 
-Firstly, we shall define the dedicated Git repository under out organization, named `helm-charts`. This repo will manage the Helm charts for our application. The sources of all the charts will be placed under the main branch, while the charts themselves would be placed under a `/charts` directory at the top-level of the directory tree. On the main branch, we create a GitHub Actions workflow file: (`.github/workflows/release.yml`), which will use the `@helm/chart-releaser-action` configuration to turn our project into a self-hosted Helm chart repository.
+Firstly, we shall define the dedicated Git repository under our organization, named `helm-charts`. This repo will manage the Helm charts for our application. The sources of all the charts will be placed under the main branch, while the charts themselves would be placed under a `/charts` directory at the top-level of the directory tree. On the main branch, we create a GitHub Actions workflow file: (`.github/workflows/release.yml`), which will use the `@helm/chart-releaser-action` configuration to turn our project into a self-hosted Helm chart repository.
 
 ```
 helm-charts/
@@ -67,7 +67,7 @@ The following metrics will be collected between two conditions:
 * Time (minutes) taken for deployment.
 * Number of manual commands executed.
 * Number of errors (error rate).
-* Qualitative feedback from. contributors.
+* Qualitative feedback from contributors.
 
 ### Method:
 
@@ -82,7 +82,7 @@ We can compare the baseline vs the automated conditions.
     - Configure the `operation` repository to automatically pull and deploy new versions.
     - Perform N release iterations using the automated workflow.
     - Record quantitative and qualitative metrics.
-3. **Analysis**: Compare the metrics between the conditions (average deployment time, command count, error rate). Gather feedback from contributors on perceived effort/efficiency. Document differences in a table and visualize improvement (e.g., bar chart)
+3. **Analysis**: Compare the metrics between the conditions (average deployment time, command count, error rate). Gather feedback from contributors on perceived effort/efficiency. Document differences in a table and visualize improvement (e.g., bar chart).
 
 ### Success criteria (Expected Outcome):
 - Reduced deployment errors and time (~30% reduction).
